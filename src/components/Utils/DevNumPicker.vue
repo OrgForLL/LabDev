@@ -20,7 +20,7 @@ export default {
   created: function() {
     let _this = this;
     _this.$axios
-//       .get(APIUTL + "/getDevNumList")
+      // .get(APIUTL + "/getDevNumList")
       .get(APIUTL, {
         params: {
           action:"getDevNumList"

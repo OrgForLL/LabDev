@@ -9,46 +9,69 @@
     :remote-method="remoteMethod"
     :loading="loading"
   >
-    <el-option v-for="item in options" :key="item.chdmvalue" :label="item.label" :value="item.chdmvalue"></el-option>
+    <el-option
+      v-for="item in options"
+      :key="item.chdmvalue"
+      :label="item.label"
+      :value="item.chdmvalue"
+    ></el-option>
   </el-select>
 </template>
 
 <script>
 export default {
   name: "ChdmSelect",
-    props: {
+  props: {
     chdm: String,
     disabled: Boolean,
-    devNum:String
+    devNum: String
   },
   data() {
-    return {      
+    return {
       options: [],
       chdmTemp: this.chdm,
       list: [],
-      loading: false      
+      loading: false
     };
   },
-  mounted() { 
+  mounted() {
+    Array.from(document.getElementsByClassName("el-select")).forEach(item => {
+      item.children[0].children[0].removeAttribute("readOnly");
+      item.children[0].children[0].onblur = function() {
+        let _this = this;
+        setTimeout(() => {
+          _this.removeAttribute("readOnly");
+        }, 200);
+      };
+    });
   },
   methods: {
     remoteMethod(query) {
       let _this = this;
-      if (query !== "" && _this.devNum!="") {
+      if (query !== "" && _this.devNum != "") {
         _this.loading = true;
         setTimeout(() => {
           _this.loadAll(_this.devNum, query, function(chdmList) {
             _this.loading = false;
-            _this.options=[];
+            _this.options = [];
             for (let item of chdmList) {
+              //e.bsbz,e.rsbz,e.zzbz,e.rsgybz,e.hzbz,e.cpbz
               _this.options.push({
                 chdmvalue: item.chdm,
                 label: item.chdm,
-                djid:item.id
+                djid: item.id,
+                desc: {
+                  bsbz: item.bsbz,
+                  rsbz: item.rsbz,
+                  zzbz: item.zzbz,
+                  rsgybz: item.rsgybz,
+                  hzbz: item.hzbz,
+                  cpbz: item.cpbz
+                }
               });
             }
-          });       
-        }, 1000);
+          });
+        }, 3000);
       } else {
         _this.options = [];
       }
@@ -87,22 +110,21 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
-    },  
+    }
   },
   watch: {
     chdmTemp(newValue, oldvalue) {
       this.$emit("update:chdm", newValue);
-      var djid = this.options.find(item =>
-        item.chdmvalue === newValue
-      ).djid
-      // console.log(tempArr);      
-      this.$emit("update:djid", djid);
+      var mbObj = this.options.find(item => item.chdmvalue === newValue);
+      // console.log(tempArr);
+      this.$emit("update:djid", mbObj.djid);
+      this.$emit("update:desc", mbObj.desc);
       //this.chdm=newValue
     },
     chdm(newValue) {
       this.chdmTemp = newValue;
     }
-  }    
+  }
 };
 </script>
 

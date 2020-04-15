@@ -13,7 +13,8 @@ module.exports = {
     proxyTable: {
       '/service/HttpRequestSkill.ashx': {
         target : 'http://192.168.35.231/service',
-        //target : 'http://192.168.36.121:9305',
+        //target : 'http://192.168.35.96:8900/svr-cooperativeoffice',
+        //target : 'http://192.168.35.97:9305',
         changeOrigin: true,
         pathRewrite: {
           '^/service/HttpRequestSkill.ashx': '/HttpRequestSkill.ashx',

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Collec from '@/components/ClothInfo/Collec'
 import ClothInfo from '@/components/ClothInfo/ClothInfo'
-import Test from '@/components/Utils/UploadImg' 
+import Upload from '@/components/Utils/Upload' 
 import printZp from '@/views/printZp.vue'
 
 Vue.use(Router)
@@ -20,9 +20,9 @@ export default new Router({
       component: ClothInfo,
     } ,
     {
-      path: '/test',
-      default: 'Test',
-      component: Test,
+      path: '/Upload',
+      default: 'Upload',
+      component: Upload,
     } ,    
     {
       path:'/dayinZp',
