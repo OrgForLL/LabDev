@@ -4,7 +4,7 @@
     filterable
     remote
     reserve-keyword
-    placeholder="请输入关键词"
+    placeholder="输入至少4位"
     :disabled="disabled"
     :remote-method="remoteMethod"
     :loading="loading"
@@ -23,6 +23,7 @@ export default {
   name: "ChdmSelect",
   props: {
     chdm: String,
+    chmc: String,
     disabled: Boolean,
     devNum: String
   },
@@ -48,7 +49,8 @@ export default {
   methods: {
     remoteMethod(query) {
       let _this = this;
-      if (query !== "" && _this.devNum != "") {
+      
+      if (query !== "" && _this.devNum != "" &&  query.length>=4) {
         _this.loading = true;
         setTimeout(() => {
           _this.loadAll(_this.devNum, query, function(chdmList) {
@@ -58,6 +60,7 @@ export default {
               //e.bsbz,e.rsbz,e.zzbz,e.rsgybz,e.hzbz,e.cpbz
               _this.options.push({
                 chdmvalue: item.chdm,
+                chmcvalue:item.chmc,
                 label: item.chdm,
                 djid: item.id,
                 desc: {
@@ -119,6 +122,7 @@ export default {
       // console.log(tempArr);
       this.$emit("update:djid", mbObj.djid);
       this.$emit("update:desc", mbObj.desc);
+      this.$emit("update:chmc", mbObj.chmcvalue);
       //this.chdm=newValue
     },
     chdm(newValue) {

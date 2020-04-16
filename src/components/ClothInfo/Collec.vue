@@ -28,6 +28,7 @@
                 <ChdmSelect
                   :devNum="mdata.devNum"
                   :chdm.sync="mdata.chdm"
+                  :chmc.sync="mdata.chmc"
                   :djid.sync="mdata.djid"
                   :desc.sync="mdata.desc"
                   :disabled="false"
@@ -37,6 +38,17 @@
           </el-row>
         </el-col>
       </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-row type="flex" justify="center">
+            <el-col :span="24">
+              <el-form-item label="材料名称">
+                {{mdata.chmc}}
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-col>
+      </el-row>      
       <div v-for="item  in lxDataList" v-bind:key="item.lx" class="text item">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
@@ -86,6 +98,7 @@ export default {
     return {
       mdata: {
         chdm: "",
+        chmc:"",
         devNum: "",
         djid: 0,
         desc: {}
