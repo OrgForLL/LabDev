@@ -1,45 +1,39 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Collec from '@/components/ClothInfo/Collec'
-import ClothInfo from '@/components/ClothInfo/ClothInfo'
-import Upload from '@/components/Utils/Upload' 
-import printZp from '@/views/printZp.vue'
+import MassProductionQualityMain from '@/components/MassProductionQuality/Main'
+import CreateCode from '@/components/CreateCode/CreateCode'
+import Upload from '@/components/Utils/Upload'
+import Test from '@/components/MassProductionQuality/Test'
 
+import ProcessControlMain from '@/components/ProcessControl/Main'
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-      path: '/',
-      default: 'Collec',
-      component: Collec,
+      path: '/MassProductionQuality',
+      default: 'MassProductionQualityMain',
+      component: MassProductionQualityMain,
     } ,
     {
-      path: '/c',
-      default: 'ClothInfo',
-      component: ClothInfo,
+      path: '/ProcessControl',
+      default: 'ProcessControlMain',
+      component: ProcessControlMain,
     } ,
     {
       path: '/Upload',
       default: 'Upload',
       component: Upload,
-    } ,    
+    } ,
     {
-      path:'/dayinZp',
-      component: printZp
-    }
-    ,
-    {
-      path:'/dayinRz',
-      component: ()=>import('@/views/printRz.vue')
+      path: '/code',
+      default: 'CreateCode',
+      component: CreateCode,
     },
     {
-      path:'/dayinSp',
-      component: ()=>import('@/views/printSp.vue')
-    },
-    {
-      path:'/dayinSx',
-      component: ()=>import('@/views/printSx.vue')
-    }
+      path: '/test',
+      default: 'Test',
+      component: Test,
+    }      
   ]
 })

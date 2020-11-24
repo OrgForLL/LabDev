@@ -1,7 +1,7 @@
 <template>
   <div id="Test">
+    <button @click="jump">vuestart.html</button>
     <input type="text" placehold="请输入id进行查询" v-model="input_value" @keyup="throttle" ref="input" />
-
     <ul v-show="state">
       <li v-for="(item,index) in list" :key="index">
         <span>{{item.id}}</span>
@@ -34,6 +34,9 @@ export default {
     };
   },
   methods: {
+    jump(){
+      window.location.href="../../static/VueStat.html"
+    },
     //触发keyup事件之后触发的方法
     search() {
       //这个变量主要是用来测试节流后和不节流的区别

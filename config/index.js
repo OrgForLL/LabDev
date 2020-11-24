@@ -11,22 +11,25 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/service/HttpRequestSkill.ashx': {
-        target : 'http://192.168.35.231/service',
-        //target : 'http://192.168.35.96:8900/svr-cooperativeoffice',
-        //target : 'http://192.168.35.97:9305',
+      '/ErpScan/HttpRequestSkill.ashx': {
+        target : 'http://192.168.35.231/QYWX/project/ErpScan',        
         changeOrigin: true,
         pathRewrite: {
-          '^/service/HttpRequestSkill.ashx': '/HttpRequestSkill.ashx',
-          //'^/service/HttpRequestSkill.ashx': '/',
-          // '^/api': '',
+          '^/ErpScan/HttpRequestSkill.ashx': '/HttpRequestSkill.ashx',          
         }
-      }
+      },
+      '/ErpScan/HttpRequestSkillFile.ashx': {
+        target : 'http://192.168.35.231/QYWX/project/ErpScan',        
+        changeOrigin: true,
+        pathRewrite: {
+          '^/ErpScan/HttpRequestSkillFile.ashx': '/HttpRequestSkillFile.ashx',          
+        }
+      }      
     },
 
     // Various Dev Server settings
-    host: 'localhost', // can be overwritten by process.env.HOST
-    port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+    host: 'localhost', // can be overwritten by process.env.HOST localhost
+    port: 9091, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
     notifyOnErrors: true,

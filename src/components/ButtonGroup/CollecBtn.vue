@@ -7,8 +7,7 @@
       mode="horizontal"
       text-color="#fff"
       active-text-color="#ffd04b"
-    > 
-    <img src="../../assets/logo_MyBB.gif">
+    >
       <el-button class="menu-item"  @click="CollecBtnClose()" >关闭</el-button>
       <el-button class="menu-item" @click="CollecBtnMySave()" >保存</el-button>
       <el-button class="menu-item" @click="CollecBtnMyDel()">删除</el-button>     

@@ -1,5 +1,5 @@
 <template>
-  <div id="Collec">
+  <div id="MassProductionQuality">
     <!-- CollecBtn -->
     <CollecBtn
       ref="CollecBtn"
@@ -14,7 +14,7 @@
           <el-row type="flex" justify="center">
             <el-col :span="24">
               <el-form-item label="开发编号">
-                <DevNumPicker :devNumTemp.sync="mdata.devNum" :disabled="false"></DevNumPicker>
+                <DevNumPicker :devNum.sync="mdata.devNum" :devDisabled="false"></DevNumPicker>
               </el-form-item>
             </el-col>
           </el-row>
@@ -25,14 +25,14 @@
           <el-row type="flex" justify="center">
             <el-col :span="24">
               <el-form-item label="材料编号">
-                <ChdmSelect
+                <MassProductionQualityChdmSelect
                   :devNum="mdata.devNum"
                   :chdm.sync="mdata.chdm"
                   :chmc.sync="mdata.chmc"
                   :djid.sync="mdata.djid"
                   :desc.sync="mdata.desc"
-                  :disabled="false"
-                ></ChdmSelect>
+                  :disabled="mdata.devNum.length>0?false:true"
+                ></MassProductionQualityChdmSelect>
               </el-form-item>
             </el-col>
           </el-row>
@@ -84,14 +84,14 @@
 <script>
 import CollecBtn from "@/components/ButtonGroup/CollecBtn.vue";
 import DevNumPicker from "@/components/Utils/DevNumPicker.vue";
-import ChdmSelect from "@/components/Utils/ChdmSelect.vue";
+import MassProductionQualityChdmSelect from "@/components/MassProductionQuality/ChdmSelect.vue";
 import Upload from "@/components/Utils/Upload.vue";
 export default {
-  name: "Collec",
+  name: "MassProductionQuality",
   components: {
     CollecBtn,
     DevNumPicker,
-    ChdmSelect,
+    MassProductionQualityChdmSelect,
     Upload
   },
   data: function() {
@@ -105,7 +105,7 @@ export default {
       },
       lxDataList: [
         { lx: "bsbz", title: "备纱", groupid: 2801 },
-        { lx: "lsbz", title: "染纱", groupid: 2802 },
+        { lx: "rsbz", title: "染纱", groupid: 2802 },
         { lx: "zzbz", title: "织造", groupid: 2803 },
         { lx: "rsgybz", title: "染色工艺", groupid: 2804 },
         { lx: "hzbz", title: "后整工序", groupid: 2805 },
@@ -118,36 +118,33 @@ export default {
   },
   methods: {
     init() {},
-    CollecBtnMySave() {
-      let that = this;
-      return new Promise(function(resolve, reject) {
+    CollecBtnMySave() {      
+      return new Promise((resolve, reject)=> {
         let param = new Object(); //   e.bsbz,e.rsbz,e.zzbz,e.rsgybz,e.hzbz,e.cpbz
-
-        param.kfbh = that.mdata.devNum;
-        param.djid = that.mdata.djid;
+        param.kfbh = this.mdata.devNum;
+        param.djid = this.mdata.djid;
         if (param.djid == null) param.djid = 0;
-        param.chdm = that.mdata.chdm;
-        param.bsbz = that.mdata.desc.bsbz;
+        param.chdm = this.mdata.chdm;
+        param.bsbz = this.mdata.desc.bsbz;
         if (param.bsbz == null) param.bsbz = "";
-        param.rsbz = that.mdata.desc.rsbz;
+        param.rsbz = this.mdata.desc.rsbz;
         if (param.rsbz == null) param.rsbz = "";
-        param.zzbz = that.mdata.desc.zzbz;
+        param.zzbz = this.mdata.desc.zzbz;
         if (param.zzbz == null) param.zzbz = "";
-        param.rsgybz = that.mdata.desc.rsgybz;
+        param.rsgybz = this.mdata.desc.rsgybz;
         if (param.rsgybz == null) param.rsgybz = "";
-        param.hzbz = that.mdata.desc.hzbz;
+        param.hzbz = this.mdata.desc.hzbz;
         if (param.hzbz == null) param.hzbz = "";
-        param.cpbz = that.mdata.desc.cpbz;
+        param.cpbz = this.mdata.desc.cpbz;
         if (param.cpbz == null) param.cpbz = "";
-
-        that.$axiosPost
+        this.$axiosPost
           // .post(APIUTL + "/upload", param)
           .post(APIUTL + "?action=SaveSGChdm", param)
-          .then(function(response) {
+          .then(response=> {
             if (response.data.errcode == 0) {
               console.log(response.data.data[0][0].id);
-              that.mdata.djid = response.data.data[0][0].id;
-              that.$message("保存成功");
+              this.mdata.djid = response.data.data[0][0].id;
+              this.$message("保存成功");
               resolve("ok");
             } else {
               reject(response);
@@ -182,7 +179,18 @@ export default {
       } else this.uploadVisible = true;
     }
   },
-  mounted() {}
+  mounted() {},
+   watch: {
+    'mdata.devNum'(newValue, oldvalue) {
+      //  console.log(newValue,oldvalue)
+       if(newValue !=oldvalue){
+         this.mdata.chdm="";
+         this.mdata.chmc="";   
+         this.mdata.djid=0;       
+         this.mdata.desc={};
+       }
+    },
+  }
 };
 </script>
 

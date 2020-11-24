@@ -1,5 +1,5 @@
 <template>
-  <el-select v-model="devNum" class="cursor-default" :disabled="disabled" placeholder="请选择">
+  <el-select v-model="devNumTemp" class="cursor-default" :disabled="devDisabled" placeholder="请选择">
     <el-option v-for="item in options" :key="item.dm" :label="item.mc" :value="item.dm"></el-option>
   </el-select>
 </template>
@@ -8,45 +8,45 @@
 export default {
   name: "DevNumPicker",
   props: {
-    devNumTemp: String,
-    disabled: Boolean
+    devNum: String,
+    devDisabled: Boolean
   },
   data: function() {
     return {
-      devNum: this.devNumTemp,
+      devNumTemp: this.devNum,
       options: []
     };
   },
-  created: function() {
-    let _this = this;
-    _this.$axios
-      // .get(APIUTL + "/getDevNumList")
+  created: function() {    
+    this.$axios      
       .get(APIUTL, {
         params: {
           action:"getDevNumList"
         }
       })
-      .then(function(response) {
+      .then(response=> {
         if (response.data.errcode == 5010) {
-          _this.$message({
+          this.$message({
             showClose: true,
             message: response.data.errmsg,
             type: "error"
           });
           return;
         }
-        _this.options = response.data.data;
+        this.options = response.data.data;
       })
-      .catch(function(error) {
+      .catch(error=>{
         console.log(error);
       });
   },
   watch: {
-    devNum(newValue, oldvalue) {
-      this.$emit("update:devNumTemp", this.devNum);
+    devNumTemp(newValue, oldvalue) {
+      //  console.log(3)
+      this.$emit("update:devNum", this.devNumTemp);
     },
-    devNumTemp(newValue) {
-      this.devNum = newValue;
+    devNum(newValue) {
+      // console.log(2)
+      this.devNumTemp = newValue;
     }
   }
 };

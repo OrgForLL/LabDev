@@ -1,9 +1,13 @@
 <template>
 
   <div class="pop-up" id="up-pup" v-if="visible">
-    <div style="height:80px;margin-top:20px;">
-      <span class="span-close" @click="closeModal">关闭</span>
+ 
+    <div style="text-align:right;margin:20px 20px 10px 0px ;">    
+        <input type="file" name="file" ref="filElem" class="upload" style='display:none' multiple @change="uploadImg" />                                   
+      <el-button  v-if="qx" type="primary" @click="choiceImg">上传</el-button>        
+      <el-button type="primary" @click="closeModal">关闭</el-button>
     </div>
+
     <el-image
       v-for="(img,index) in imgList"
       :key="index"
@@ -11,10 +15,7 @@
       :src="img.URLAddress"
       :preview-src-list="getImgList(img)"
     ></el-image>
-    <div class="face" v-if="qx">
-      <input type="file" name="file" class="upload" multiple @change="uploadImg" />
-      <span class="span-txt">上传</span>
-    </div>
+
   </div>
 </template>
 
@@ -52,6 +53,9 @@ export default {
       //console.log(this.groupidIn);
       if (this.visible) this.search();
     },
+    choiceImg(){
+        this.$refs.filElem.dispatchEvent(new MouseEvent('click')) 
+    },    
     getImgList(img) {
       //只有一张
       let arr = [];
@@ -67,17 +71,18 @@ export default {
         let param = new FormData(); // 创建form对象
         let file = e.target.files[i];
         //解决ios拍照照片自动旋转问题
-        getOrientation(file, function(orientation) {
+        getOrientation(file, (orientation)=> {
+          console.log(this,orientation);
           const reader = new FileReader();
           reader.readAsDataURL(file);
-          reader.onload = function(evt) {
+          reader.onload = (evt)=> {
             const base64 = evt.target.result;
             // 将图片旋转到正确的角度 并压缩
-            resetOrientation(base64, orientation, function(resultBase64) {
-              b64toBlob(resultBase64, function(blob) {
+            resetOrientation(base64, orientation, (resultBase64)=> {
+              b64toBlob(resultBase64, (blob)=> {
                 param.append("file", blob, file.name); // 通过append向form对象添加数据
-                param.append("groupid", that.groupidIn);
-                param.append("tableid", that.tableidIn);
+                // param.append("groupid", that.groupidIn);
+                // param.append("tableid", that.tableidIn);
                 //调用接口上传图片
                 return registerFace(param, config).then(
                   res => {if (res == "ok") that.$message(file.name + "上传成功");             // 上传成功逻辑 
@@ -91,7 +96,10 @@ export default {
         return new Promise(function(resolve, reject) {
           that.$axiosPost
             // .post(APIUTL + "/upload", param)
-            .post(APIUTL + "?action=upload", param)
+            .post(APIUTLFile + "?serviceGotoUrl="+
+            encodeURIComponent(NetUrlUpload + "service/HttpRequestSkill.ashx?groupid="
+            +that.groupidIn+"&tableid="
+            +that.tableidIn), param)
             .then(function(response) {
               if (response.data.errcode == 0) {
                 that.search();
@@ -106,6 +114,7 @@ export default {
       function getOrientation(file, callback) {
         EXIF.getData(file, function() {
           var orientation = EXIF.getTag(this, "Orientation");
+          console.log(orientation)
           return callback(orientation);
         });
       }
@@ -151,7 +160,9 @@ export default {
           canvas.width = width * rate;
           canvas.height = height * rate;
           // 安卓机不需要矫正图片
+           console.log(srcOrientation);
           if (srcOrientation && srcOrientation !== 1) {
+            console.log(srcOrientation);
             // 判断图片方向，压缩并矫正
             switch (srcOrientation) {
               // 当图片旋转180°时
@@ -271,51 +282,7 @@ export default {
 </script>
 
 <style scoped>
-.face {
-  margin-top: 20px;
-  position: relative;
-}
-.face .upload {
-  width: calc(100% - 40px);
-  height: 43px;
-  line-height: 43px;
-  opacity: 0;
-  position: absolute;
-  z-index: 22;
-  left: 0;
-  margin: auto;
-  right: 0;
-}
-.span-close {
-  font-family: PingFangSC-Medium;
-  font-size: 16px;
-  color: #ffffff;
-  position: absolute;
-  margin-top: 10px;
-  margin-right: 10px;
-  right: 0;
-  background: #cdab6a;
-  width: calc(100% - 290px);
-  height: 43px;
-  line-height: 43px;
-  border-radius: 4px;
-  text-align: center;
-}
-.face .span-txt {
-  font-family: PingFangSC-Medium;
-  font-size: 16px;
-  color: #ffffff;
-  position: absolute;
-  left: 0;
-  margin: auto;
-  right: 0;
-  background: #cdab6a;
-  width: calc(100% - 40px);
-  height: 43px;
-  line-height: 43px;
-  border-radius: 4px;
-  text-align: center;
-}
+ 
 #up-pup {
     width: 100%;
     height: 100%;
