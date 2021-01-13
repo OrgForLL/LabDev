@@ -12,30 +12,39 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/ErpScan/HttpRequestSkill.ashx': {
-        target : 'http://192.168.35.231/QYWX/project/ErpScan',        
+        target: 'http://192.168.35.231/QYWX/project/ErpScan',
         changeOrigin: true,
         pathRewrite: {
-          '^/ErpScan/HttpRequestSkill.ashx': '/HttpRequestSkill.ashx',          
+          '^/ErpScan/HttpRequestSkill.ashx': '/HttpRequestSkill.ashx',
         }
       },
       '/ErpScan/HttpRequestSkillFile.ashx': {
-        target : 'http://192.168.35.231/QYWX/project/ErpScan',        
+        target: 'http://192.168.35.231/QYWX/project/ErpScan',
         changeOrigin: true,
         pathRewrite: {
-          '^/ErpScan/HttpRequestSkillFile.ashx': '/HttpRequestSkillFile.ashx',          
+          '^/ErpScan/HttpRequestSkillFile.ashx': '/HttpRequestSkillFile.ashx',
         }
-      }      
+      },
+      '/MobileScan/checkScan.ashx': {
+        // target : 'http://192.168.35.231/QYWX/project/MobileScan',
+        target: 'http://tm.lilanz.com/oa/project/MobileScan',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/MobileScan/checkScan.ashx': '/checkScan.ashx',
+        }
+      }
     },
 
     // Various Dev Server settings
-    host: 'localhost', // can be overwritten by process.env.HOST localhost
+    host: '0.0.0.0', // can be overwritten by process.env.HOST localhost
+    disableHostCheck: true,
     port: 9091, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
     notifyOnErrors: true,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
 
-    
+
     /**
      * Source Maps
      */

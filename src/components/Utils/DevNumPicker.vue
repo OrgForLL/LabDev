@@ -52,7 +52,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .cursor-default input {
   cursor: default !important;
 }

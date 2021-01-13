@@ -107,7 +107,8 @@ const webpackConfig = merge(baseWebpackConfig, {
       children: true,
       minChunks: 3
     }),
-
+    //https://segmentfault.com/a/1190000013579235
+    new webpack.optimize.CommonsChunkPlugin("common.js"),
     // copy custom static assets
     new CopyWebpackPlugin([
       {
@@ -115,7 +116,7 @@ const webpackConfig = merge(baseWebpackConfig, {
         to: config.build.assetsSubDirectory,
         ignore: ['.*']
       }
-    ])
+    ])  
   ]
 })
 

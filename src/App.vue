@@ -6,34 +6,40 @@
 
 <script>
 export default {
-  name: 'App',
-  provide () {
+  name: "App",
+  provide() {
     return {
-      reload: this.reload
-    }
+      reload: this.reload,
+    };
   },
-  data () {
+  data() {
     return {
-      isRouterAlive: true
-    }
+      isRouterAlive: true,
+    };
   },
   methods: {
-    reload () {
-      this.isRouterAlive = false
+    reload() {
+      this.isRouterAlive = false;
       this.$nextTick(function () {
-        this.isRouterAlive = true
-      })
-    }
-  }
-}
+        this.isRouterAlive = true;
+      });
+    },
+  },
+};
 </script>
 
 <style>
+html,
+body,
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  height: 100%;
+}
+#app {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+  
 }
 .el-input__inner {
   padding: 0 5px;
@@ -43,5 +49,6 @@ table {
 }
 body {
   margin: 0 !important;
+  
 }
 </style>

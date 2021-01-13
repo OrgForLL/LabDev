@@ -94,8 +94,7 @@ export default {
       }
       function registerFace(param, config) {
         return new Promise(function(resolve, reject) {
-          that.$axiosPost
-            // .post(APIUTL + "/upload", param)
+          that.$axiosPost           
             .post(APIUTLFile + "?serviceGotoUrl="+
             encodeURIComponent(NetUrlUpload + "service/HttpRequestSkill.ashx?groupid="
             +that.groupidIn+"&tableid="
@@ -237,8 +236,7 @@ export default {
     },
     search() {
       let that =this;
-      this.$axios
-        // .get(APIUTL + "/getImgage?tableid="+this.tableidIn+"&groupid="+this.groupidIn)
+      this.$axios        
         .get(APIUTL, {
           params: {
             action: "getImgage",

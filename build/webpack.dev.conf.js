@@ -9,9 +9,9 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
-
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
+
 
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
@@ -44,6 +44,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       poll: config.dev.poll,
     }
   },
+  
   plugins: [
     new webpack.DefinePlugin({
       'process.env': require('../config/dev.env')
@@ -55,7 +56,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'index.html',
-      inject: true
+      inject: true  
     }),
     // copy custom static assets
     new CopyWebpackPlugin([

@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import CollecBtn from "@/components/ButtonGroup/CollecBtn.vue";
+import CollecBtn from "@/components/Utils/CollecBtn.vue";
 import DevNumPicker from "@/components/Utils/DevNumPicker.vue";
 import MassProductionQualityChdmSelect from "@/components/MassProductionQuality/ChdmSelect.vue";
 import Upload from "@/components/Utils/Upload.vue";
@@ -137,8 +137,7 @@ export default {
         if (param.hzbz == null) param.hzbz = "";
         param.cpbz = this.mdata.desc.cpbz;
         if (param.cpbz == null) param.cpbz = "";
-        this.$axiosPost
-          // .post(APIUTL + "/upload", param)
+        this.$axiosPost          
           .post(APIUTL + "?action=SaveSGChdm", param)
           .then(response=> {
             if (response.data.errcode == 0) {
@@ -194,6 +193,4 @@ export default {
 };
 </script>
 
-<style>
-
-</style>
+ 
