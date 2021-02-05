@@ -802,7 +802,7 @@ export default {
       this.$axios
         .get(APIUTL, {
           params: {
-            serviceGotoUrl: NetUrl + "qywx/project/erpscan/yf_cl_sphh_xsb.aspx",
+            serviceGotoUrl: NetUrl+(NetUrl.indexOf("192.168.35.231")>=0?"oa":"qywx") + "/project/erpscan/yf_cl_sphh_xsb.aspx",
             serviceGoto: ".net",
             encoding: "gb2312",
             sphh: result,
@@ -845,8 +845,8 @@ export default {
         .post(
           APIUTL +
             "?serviceGotoUrl=" +
-            NetUrl +
-            "qywx/project/erpscan/sphhinfo.ashx" +
+            NetUrl +(NetUrl.indexOf("192.168.35.231")>=0?"oa":"qywx")+
+            "/project/erpscan/sphhinfo.ashx" +
             "&serviceGoto=.net&encoding=gb2312",
           param
         )

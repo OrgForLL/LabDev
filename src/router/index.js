@@ -10,9 +10,9 @@ import Empty from '@/components/Utils/Empty'
 // 这里用到了webpack2的import()它会返回一个promise
 let ProcessControlMain = () => import('@/components/ProcessControl/Main')
 let MaterialApplyMain = () => import('@/components/MaterialApply/Main')
-// import ProcessControlMain from '@/components/ProcessControl/Main'
 let MassProductionQualityMain = () => import('@/components/MassProductionQuality/Main')
 let FactoryWashMain = () => import('@/components/FactoryWash/Main')
+let MaterielCodeMain = () => import('@/components/MaterielCode/Main')
 // import MassProductionQualityMain from '@/components/MassProductionQuality/Main'
 Vue.use(Router)
 
@@ -31,6 +31,16 @@ export default new Router({
         requireAuth:true 
       }
     } ,
+
+    {
+      path: '/MaterielCode',
+      default: 'MaterielCodeMain',
+      component: MaterielCodeMain,
+      meta:{
+        requireAuth:true 
+      }
+    } ,
+       
     {
       path: '/MaterialApply',
       default: 'MaterialApplyMain',

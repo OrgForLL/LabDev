@@ -43,10 +43,18 @@ httpPost.interceptors.request.use(config => {
   config.headers['Content-Type'] = 'application/json'
   return config
 })
+//需求点
+//1 [开发环境]分测试和正式,  目地是可以在开发环境连接正式环境
+//process.env.type=231 就是测试,
+//2.编译分测试和正式,因为连接不一样,具体上传文件TM下是不行,
 
 // 设置基础URL地址 项目放在tm域名下，访问后台的时候用这个路径
 //本机测试的时候会跳转到http://192.168.35.231/QYWX/project/ErpScan
-const APIUTL = '../ErpScan/HttpRequestSkill.ashx'
+let APIUTL = '../ErpScan/HttpRequestSkill.ashx'
+//暂时不能这样写,因为发布的时候要发会把10带出去
+if (process.env.type == '10') {
+  APIUTL= '../ErpScan10/HttpRequestSkill.ashx'
+}
 window.APIUTL = APIUTL;
 
 //上传图片路径，主要处理数据类型=multipart/form-data,HttpRequestSkill是10和tm下是一致的， 上传图只有tm下用
@@ -59,7 +67,7 @@ window.APIUTLOuth = APIUTLOuth;
 
 //从哪里获取数据标签信息，正式的时候从tm下面，测试的时候从231
 let NetUrl = 'http://tm.lilanz.com/'
-console.log(process.env.type)
+console.log(this,process.env.type)
 if (process.env.type == '231') {
   NetUrl='http://192.168.35.231/'
 }

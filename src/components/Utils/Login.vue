@@ -56,6 +56,7 @@ export default {
         .then(response=> {  
         if (response.data.code == 200) {        
             myStore.userInfo=response.data.data;    
+            myStore.userInfo.apptoken=param.token
             // console.log(myStore.userInfo);            
             this.show=false;
             this.$router.push({ path: getUrlKey("path",window.location.href) })

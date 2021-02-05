@@ -1,98 +1,47 @@
 <template>
-  <div class="wrap"> 
-    <div style="margin-left: 10px; margin-right: 10px;margin-top:10px;" v-loading="loading" v-show="scanVisible">
+  <div class="wrap">
+    <div
+      style="margin-left: 10px; margin-right: 10px; margin-top: 10px"
+      v-loading="loading"
+      v-show="scanVisible"
+    >
       <van-cell-group>
-        <van-field
-          readonly
-          clickable
-          label="开发编号"
-          :value="mdata.kfbh"
-          placeholder="开发编号"
-          @click="mdata.showKfbh = true"
+        <FieldPickerSingle
+          title="开发编号"
+          :inValue.sync="mdata.kfbhid"
+          :inText.sync="mdata.kfbh"
+          type="getDevNumList"
         />
-        <van-popup v-model="mdata.showKfbh" round position="bottom">
-          <PickerSingle
-            :model.sync="mdata.showKfbh"
-            title="开发编号"
-            type="devNumList"
-            :inValue.sync="mdata.kfbhid"
-            :inText.sync="mdata.kfbh"
-          />
-        </van-popup>
 
-        <van-field
-          readonly
-          clickable
-          label="采购类别"
-          :value="mdata.djlb"
-          placeholder="采购类别"
-          @click="mdata.showDjlb = true"
+        <FieldPickerSingle
+          title="采购类别"
+          :inValue.sync="mdata.djlbid"
+          :inText.sync="mdata.djlb"
+          type="getMaterialApplyDjlb"
         />
-        <van-popup v-model="mdata.showDjlb" round position="bottom">
-          <PickerSingle
-            :model.sync="mdata.showDjlb"
-            title="采购类别"
-            type="materialApplyDjlb"
-            :inValue.sync="mdata.djlbid"
-            :inText.sync="mdata.djlb"
-          />
-        </van-popup>
 
-        <van-field
-          readonly
-          clickable
-          label="申请部门"
-          :value="mdata.bm"
-          placeholder="申请部门"
-          @click="mdata.showBm = true"
-        />
-        <van-popup v-model="mdata.showBm" round position="bottom">
-          <PickerSingle
-            :model.sync="mdata.showBm"
-            title="申请部门"
-            type="materialApplyBm"
-            :inValue.sync="mdata.bmid"
-            :inText.sync="mdata.bm"
-          />
-        </van-popup>
+        <FieldPickerSingle
+          title="申请部门"
+          :inValue.sync="mdata.bmid"
+          :inText.sync="mdata.bm"
+          type="getMaterialApplyBm"
+        />     
 
-        <van-field
-          readonly
-          clickable
-          label="设计风格"
-          :value="mdata.xl"
-          placeholder="设计风格"
-          @click="mdata.showXl = true"
-        />
-        <van-popup v-model="mdata.showXl" round position="bottom">
-          <PickerSingle
-            :model.sync="mdata.showXl"
-            title="设计风格"
-            type="spfg"
-            @goback="pickerSingleBack"
-            :inValue.sync="mdata.xldm"
-            :inText.sync="mdata.xl"
-          />
-        </van-popup>
+        <FieldPickerSingle
+          title="设计风格"
+          :inValue.sync="mdata.xldm"
+          :inText.sync="mdata.xl"
+          type="getDesignStyleList"
+          @goback="pickerSingleBack"
+        /> 
 
-        <van-field
-          readonly
-          clickable
-          label="项目经理"
-          :value="mdata.xmjl"
-          placeholder="项目经理"
-          @click="mdata.showXmjl = true"
-        />
-        <van-popup v-model="mdata.showXmjl" round position="bottom">
-          <PickerSingle
-            :model.sync="mdata.showXmjl"
-            title="项目经理"
-            type="materialApplyXmjl"
-            @goback="pickerSingleBack"
-            :inValue.sync="mdata.xmjlid"
-            :inText.sync="mdata.xmjl"
-          />
-        </van-popup>
+        <FieldPickerSingle
+          title="项目经理"
+          :inValue.sync="mdata.xmjlid"
+          :inText.sync="mdata.xmjl"
+          type="getMaterialApplyXmjl"
+          @goback="pickerSingleBack"
+        />  
       </van-cell-group>
       <van-collapse v-model="activeNames">
         <van-collapse-item
@@ -122,51 +71,28 @@
               <!-- 允许输入数字，调起带符号的纯数字键盘 -->
               <van-field v-model="item.sl" type="number" label="调样数量" />
 
-              <van-field
-                readonly
-                clickable
-                label="品类"
-                :value="item.wgbs"
-                placeholder="品类"
-                @click="item.showWgbs = true"
-              />
-              <van-popup v-model="item.showWgbs" round position="bottom">
-                <PickerSingle
-                  :model.sync="item.showWgbs"
-                  title="品类"
-                  type="splb"
-                  :inValue.sync="item.wgbsid"
-                  :inText.sync="item.wgbs"
-                  :inExtObj="{ query: 'yfdy' }"
-                />
-              </van-popup>
+              <FieldPickerSingle
+                title="品类"
+                :inValue.sync="item.wgbsid"
+                :inText.sync="item.wgbs"
+                type="getClothTypes"
+                :inExtObj="{ query: 'yfdy' }"         
+              /> 
 
-              <van-field
-                readonly
-                clickable
-                label="颜色情况"
-                :value="item.htid"
-                placeholder="颜色情况"
-                @click="item.showHtid = true"
-              />
-              <van-popup v-model="item.showHtid" round position="bottom">
-                <PickerSingle
-                  :model.sync="item.showHtid"
-                  title="颜色情况"
-                  type="materialApplyTypes"
-                  :inValue.sync="item.htidid"
-                  :inText.sync="item.htid"
-                />
-              </van-popup>
-
+              <FieldPickerSingle
+                title="颜色情况"
+                :inValue.sync="item.htidid"
+                :inText.sync="item.htid"
+                type="getMaterialApplyTypes"            
+              />  
               <van-field v-model="item.zks" type="digit" label="标签数" />
             </van-cell-group>
           </div>
         </van-collapse-item>
       </van-collapse>
     </div>
-  
-    <van-tabbar  v-model="active" @change="handleSelect"  >
+
+    <van-tabbar v-model="active" @change="handleSelect">
       <van-tabbar-item name="add" icon="scan">添加</van-tabbar-item>
       <van-tabbar-item name="save" icon="certificate">保存</van-tabbar-item>
       <van-tabbar-item name="clear" icon="replay">清空</van-tabbar-item>
@@ -188,9 +114,8 @@ import { Row as VanRow } from "vant";
 import { Icon as VanIcon } from "vant";
 export default {
   name: "MaterialApply",
-  components: {
-    Detail: () => import("@/components/ProcessControl/Detail"),
-    PickerSingle: () => import("@/components/Utils/PickerSingle"),
+  components: {    
+    FieldPickerSingle: () => import("@/components/Utils/FieldPickerSingle"),
     VanButton,
     VanTabbar,
     VanTabbarItem,
@@ -204,27 +129,26 @@ export default {
   },
   data: function () {
     return {
-  
       active: "",
       activeNames: [0],
       mdata: {
         kfbh: "", //g开发编号
         kfbhid: 0, //开发编号
-        showKfbh: false, //开发编号
+ 
         djlb: "", //采购类别
         djlbid: 0, //采购类别
-        showDjlb: false, //采购类别
+      
         xmjl: "", //项目经理
         xmjlid: 0, //项目经理
         fgid: 0, //项目经理对应的风格
-        showXmjl: false, //项目经理
+  
         bm: "", //申请部门
         bmid: 0, //申请部门
-        showBm: false, //申请部门
+    
         xl: "", //成衣设计风格
         xldm: "", //成衣设计风格
         xlid: 0, //成衣设计风格
-        showXl: false, //
+ 
 
         detail: [
           // {
@@ -272,7 +196,6 @@ export default {
           //     khmc:"",//供应商
           //     zks:"",//标签数量
           // },
-        
         ],
       },
       loading: false,
@@ -285,12 +208,12 @@ export default {
       llApp.init();
     },
     pickerSingleBack(type, mark, obj) {
-      if (type == "materialApplyXmjl") {
+      if (type == "getMaterialApplyXmjl") {
         //项目经理
         this.mdata.fgid = obj.fgid;
-      } else if (type == "spfg") {
+      } else if (type == "getDesignStyleList") {
         this.mdata.xlid = obj.id;
-        console.log(this.mdata.xlid);
+        // console.log(this.mdata.xlid);
       }
     },
     handleSelect(index) {
@@ -309,7 +232,7 @@ export default {
       this.searchPromise(chdm)
         .then((result) => {
           if (result.errcode != 0) {
-            this.errMsg(result.errmsg)            
+            this.errMsg(result.errmsg);
             this.loading = false;
             return;
           }
@@ -318,13 +241,16 @@ export default {
           let data = result.data[0][0];
           for (let i = 0; i < this.mdata.detail.length; i++) {
             if (this.mdata.detail[i].khid != data.khid) {
-              this.errMsg('供应商不一致')              
+              this.errMsg("供应商不一致");
               this.loading = false;
               return;
             }
 
-            if (this.mdata.detail[i].chmc == data.mlbh && process.env.type != "231") {
-              this.errMsg("此材料已经扫描")              
+            if (
+              this.mdata.detail[i].chmc == data.mlbh &&
+              process.env.type != "231"
+            ) {
+              this.errMsg("此材料已经扫描");
               this.loading = false;
               return;
             }
@@ -338,15 +264,14 @@ export default {
           addItem.id = data.id;
           addItem.zks = 0; //先默认,后端空串的时候会报错
           addItem.kfbhdm = data.kfbhdm;
-          addItem.showWgbs = false; //一定要默认false不然会有异常,点不出来
-          addItem.showHtid = false; //一定要默认false不然会有异常,点不出来
+     
           this.mdata.detail.unshift(addItem);
           this.loading = false;
 
           this.active = ""; //不让下面的菜单选中,默认会选中再点的时候不会触发事件
         })
         .catch((error) => {
-          this.errmsg(error)        
+          this.errmsg(error);
           this.loading = false;
           this.active = ""; //不让下面的菜单选中,默认会选中再点的时候不会触发事件
         }); //测试用
@@ -375,7 +300,7 @@ export default {
         if (result.split(":")[0] == "chdm") {
           chdm = result.split(":")[1];
         } else {
-          this.errMsg("标签不对")          
+          this.errMsg("标签不对");
           return false;
         }
         this.search(chdm);
@@ -428,7 +353,7 @@ export default {
       } else {
         xmjl = this.mdata.xmjl || myStore.userInfo.cname;
       }
-      console.log(myStore.userInfo);
+      // console.log(myStore.userInfo);
       if (
         this.mdata.xlid != 16902 &&
         this.mdata.xlid != 16679 &&
@@ -469,7 +394,7 @@ export default {
         mxTemp.zks = this.mdata.detail[i].zks;
         let sphhObj = {};
         sphhObj.chdm = this.mdata.detail[i].chdm;
-        console.log(sphhObj);
+        // console.log(sphhObj);
         dataObj.dataList.push(sphhObj);
         if (!this.mdata.detail[i].zks && this.mdata.djlbid == 7748) {
           //面料才控制
@@ -483,6 +408,7 @@ export default {
           this.active = ""; //不让下面的菜单选中,默认会选中再点的时候不会触发事件
           return false;
         }
+        console.log(this.mdata.detail[i].wgbsid)
         if (!this.mdata.detail[i].wgbsid) {
           this.errMsg("请选择好品类");
           this.active = ""; //不让下面的菜单选中,默认会选中再点的时候不会触发事件
@@ -491,7 +417,7 @@ export default {
         isFL = isFL || this.mdata.detail[i].lymxid != 9114;
         mxObj.push(mxTemp);
       }
-      console.log(isFL, this.mdata.djlbid);
+      // console.log(isFL, this.mdata.djlbid);
       if (isFL && this.mdata.djlbid == 7748) {
         this.errMsg("辅料的采购类别不能选择[面料申购]");
         this.active = ""; //不让下面的菜单选中,默认会选中再点的时候不会触发事件

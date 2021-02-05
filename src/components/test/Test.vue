@@ -124,10 +124,10 @@ export default {
       llApp.init();
     },
     pickerSingleBack(type, mark, obj) {
-      if (type == "materialApplyXmjl") {
+      if (type == "getMaterialApplyXmjl") {
         //项目经理
         this.mdata.fgid = obj.fgid;
-      } else if (type == "spfg") {
+      } else if (type == "getDesignStyleList") {
         this.mdata.xlid = obj.id;
         console.log(this.mdata.xlid);
       }

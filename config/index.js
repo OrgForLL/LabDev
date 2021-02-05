@@ -3,7 +3,7 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
-
+console.log(this,process.env.type)
 module.exports = {
   dev: {
 
@@ -18,6 +18,13 @@ module.exports = {
           '^/ErpScan/HttpRequestSkill.ashx': '/HttpRequestSkill.ashx',
         }
       },
+      '/ErpScan10/HttpRequestSkill.ashx': {
+        target: 'http://tm.lilanz.com/oa/project/ErpScan',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/ErpScan10/HttpRequestSkill.ashx': '/HttpRequestSkill.ashx',
+        }
+      },      
       '/ErpScan/HttpRequestSkillFile.ashx': {
         target: 'http://192.168.35.231/QYWX/project/ErpScan',
         changeOrigin: true,
