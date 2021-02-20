@@ -13,7 +13,7 @@
     </el-form> 
     <div class="errtips">{{this.mdata.errmsg}}</div>
     <div style="text-align:right;">
-      <!-- <el-button type="primary" @click="doLogin" :loading="loading">{{this.mdata.loading ? '登录中..':'登 录'}}</el-button> -->
+      <a-button type="primary" @click="login">login</a-button>
     </div>
 </div>
 </template>
@@ -43,6 +43,39 @@ export default {
     doLogin() {
 
     },
+        login() {
+ 
+      let param = new Object();
+      param.password = this.mdata.userpass;
+      param.name = this.mdata.username;
+      let url =
+        APIUTL +
+        "?serviceName=svr-coreldrawaddon&action=login&name=" +
+        this.mdata.username +
+        "&password=" +
+        this.mdata.userpass +
+        "";
+      this.$axios.get(url).then((response) => {
+        console.log(response);
+        if (response.data.errcode == 0) {
+          let obj = {};
+          obj.userid = response.data.data.id;
+          obj.cname = response.data.data.cname;
+          myStore.userInfo = obj;
+          this.show = false;
+          let url=getUrlKey("path", window.location.href);          
+          this.$router.push({ path: url.replace("apptoken="+getUrlKey("apptoken", window.location.href),
+          ""
+          ) });
+        } else {
+          console.log(response.data.message);
+          this.mdata.errmsg = response.data.message;
+          this.loading = false;
+          this.show = true;
+        }
+      });
+      
+    },
     imLogin(){
         //取IM中身份        
         let param = new Object(); 
@@ -54,8 +87,11 @@ export default {
         this.$axiosPost          
         .post(APIUTLOuth ,  param)
         .then(response=> {  
-        if (response.data.code == 200) {        
-            myStore.userInfo=response.data.data;    
+        if (response.data.code == 200) {       
+            let obj={};
+            obj.userid=response.data.data.userid
+            obj.cname=response.data.data.cname
+            myStore.userInfo=obj;    
             myStore.userInfo.apptoken=param.token
             // console.log(myStore.userInfo);            
             this.show=false;

@@ -2,12 +2,12 @@
   <van-popup
     v-model="model"
     v-loading="loading"
-    round
+    closeable
     @close="closeEvn"
     position="bottom"
     style="max-height: 300px"
   >
-    <RowCol :dataList="options" @goback="popupBack"></RowCol>
+    <RowCol style="margin:5px;" :dataList="options" @goback="popupBack"></RowCol>
   </van-popup>
 </template>
 
@@ -50,8 +50,9 @@ export default {
     popupBack(item) {
       let result = {};
       result.errcode = 0;
-      result.data = item;
-      this.close(item.data);
+      result.data = item.data;
+      
+      this.close(result);
     },
     search() {
       this.searchPromise(this.waterFallSearchName).then((result) => {

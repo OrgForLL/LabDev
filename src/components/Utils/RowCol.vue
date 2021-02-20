@@ -9,7 +9,7 @@
       v-for="(rItem, rIndex) in rowList.waterFallList"
       :key="rIndex"
       :name="rIndex" 
-      style="margin-bottom:10px;"     
+      style="margin-top:5px;"
     >
       <van-col
         v-for="(colItem, colIndex) in rItem"

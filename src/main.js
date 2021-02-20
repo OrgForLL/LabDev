@@ -51,7 +51,6 @@ httpPost.interceptors.request.use(config => {
 // 设置基础URL地址 项目放在tm域名下，访问后台的时候用这个路径
 //本机测试的时候会跳转到http://192.168.35.231/QYWX/project/ErpScan
 let APIUTL = '../ErpScan/HttpRequestSkill.ashx'
-//暂时不能这样写,因为发布的时候要发会把10带出去
 if (process.env.type == '10') {
   APIUTL= '../ErpScan10/HttpRequestSkill.ashx'
 }

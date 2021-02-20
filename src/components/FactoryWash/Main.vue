@@ -753,14 +753,19 @@ export default {
         type: "error",
       });
     },
-    popupRowColBack(type, mark, item) {
+    popupRowColBack(type, mark, result) {
       if (type == "fwsphh") {
         this.mdata.sphhModel = false;
-        if (item.errcode > 0) {
-          this.$message(item.errmsg);
+        if (result.errcode > 0) {
+          this.$message(result.errmsg);
+          this.mdata.yplbDisabled = true;
+          return false;
+        }        
+        if (!result.data) {//直接点取消回来的
           this.mdata.yplbDisabled = true;
           return false;
         }
+        let item=result.data;
         this.mdata.sphh = item.sphh;
         this.mdata.sphhHidden = item.sphh; //有可能输入了货号但没点查询,这个用来判断保存的
         this.mdata.khmc = item.khmc;
@@ -825,10 +830,10 @@ export default {
             if (result.errcode != 0) {
               this.errMsg(result.errmsg);
               this.loading = false;
-               this.init();
+              this.init();
               return;
             }
-            this.loading = false;        
+            this.loading = false;
             if (result.data.isneed == 1) {
               let baseUrl =
                 "http://sj.lilang.com:186/llsj/docDetailDataFF.aspx?";
@@ -843,11 +848,9 @@ export default {
                   key == "userid"
                 ) {
                   if (baseUrl.indexOf("?") === -1) {
-                    baseUrl =
-                      baseUrl + "?" + key + "=" + result.data[key] + "";
+                    baseUrl = baseUrl + "?" + key + "=" + result.data[key] + "";
                   } else {
-                    baseUrl =
-                      baseUrl + "&" + key + "=" + result.data[key] + "";
+                    baseUrl = baseUrl + "&" + key + "=" + result.data[key] + "";
                   }
                 }
               }
@@ -871,8 +874,6 @@ export default {
             reject(error);
           });
       });
-
-      
     },
   },
   mounted() {},
