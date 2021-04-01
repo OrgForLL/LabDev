@@ -96,6 +96,7 @@ export default {
     },
   },
   created: function () {
+    // console.log(this.title)
     //只加载一次
     // console.log(this.inValue);
   },

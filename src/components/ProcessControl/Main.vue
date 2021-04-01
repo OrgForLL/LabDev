@@ -1,12 +1,27 @@
 <template>
   <div
     id="ProcessControl"
-    style="margin-left: 10px; margin-right: 10px; font-size: 14px"
+    class="wrap"
   >
     <div v-loading="loading">
       <div v-show="scanVisible">
         <h2 style="text-align: center">产品质量记录信息</h2>
-        <el-form :model="mdata">
+        <van-cell-group>
+          <van-field   v-model="mdata.sphh" label="货号" />
+        </van-cell-group>
+        <van-button
+          block
+          size="small"
+          @click="search"
+          type="primary"
+          style="margin-top: 10px; margin-bottom: 10px"
+          >查询</van-button
+        >
+        <van-button block size="small" @click="scan" type="primary"
+          >扫描</van-button
+        >
+
+        <!-- <el-form :model="mdata">
           <el-form-item>
             <el-col :span="4">货号:</el-col>
             <el-col :span="20"
@@ -23,52 +38,76 @@
               >扫描</el-button
             >
           </el-form-item>
-        </el-form>
+        </el-form> -->
+        <van-divider
+          :style="{
+            color: '#1989fa',
+            borderColor: '#1989fa',
+            padding: '0 16px',
+          }"
+          content-position="left"
+          >扫描记录</van-divider
+        >
+        
+        <van-cell-group  >
+          <van-cell v-for="item in historyList" :key="item.tm" :title="item.tm"
+           @click="bqLogSearch(item)" is-link />
+        </van-cell-group>
+        
 
-        <el-card class="box-card">
+        <!-- <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>扫描记录</span>
           </div>
           <div v-for="item in historyList" :key="item.tm" class="text item">
             <a href="#" @click.stop="bqLogSearch(item)">{{ item.tm }}</a>
           </div>
-        </el-card>
+        </el-card> -->
       </div>
       <!--详情页-->
       <div v-if="colVisible">
         <Detail @goback="scanGoback" v-bind:sphhIn="this.mdata.sphh"></Detail>
       </div>
     </div>
-
   </div>
 </template>
 
 <script>
+import { Button as VanButton } from "vant";
+import { Popup as VanPopup } from "vant";
+import { Field as VanField } from "vant";
+import { Divider as VanDivider } from "vant";
+import { Cell as VanCell } from "vant";
+import { CellGroup as VanCellGroup } from "vant";
 export default {
   name: "ProcessControl",
-  components: {      
-    'Detail': () => import('@/components/ProcessControl/Detail')
+  components: {
+    Detail: () => import("@/components/ProcessControl/Detail"),
+    VanButton,
+    VanPopup,
+    VanField,
+    VanDivider,VanCell,VanCellGroup
   },
   data: function () {
-    return {      
+    return {
       mdata: {
-        sphh: "",    
+        sphh: "",
       },
       historyList: [
         // {tm:"test"}
       ],
-      loading: false,   
-      colVisible: false,//详情页是否隐藏
-      scanVisible: true,//扫描页是否隐藏
+      loading: false,
+      colVisible: false, //详情页是否隐藏
+      scanVisible: true, //扫描页是否隐藏
     };
   },
   methods: {
-    init() {      
+    init() {
       llApp.init();
     },
-    scanGoback(){
-      this.scanVisible=true;
-      this.colVisible=false;
+    scanGoback() {
+      this.scanVisible = true;
+      this.colVisible = false;
     },
     search() {
       if (this.mdata.sphh.length == 0) {
@@ -76,9 +115,8 @@ export default {
         return false;
       }
       this.colVisible = true;
-      this.scanVisible=false;   
-      this.addLog(this.mdata.sphh); //增加扫描记录  
-    
+      this.scanVisible = false;
+      this.addLog(this.mdata.sphh); //增加扫描记录
     },
     scan() {
       llApp.scanQRCode((result) => {
@@ -86,29 +124,23 @@ export default {
         this.search();
       });
     },
-   bqLogSearch(item) {
+    bqLogSearch(item) {
       this.mdata.sphh = item.tm;
       this.search();
-    },    
+    },
     addLog(result) {
       var obj = {};
       obj.tm = result;
-      this.historyList.forEach((element) => {
-        if (element.tm == result) {
-          obj = {};
-        }
-      });
-      obj && this.historyList.push(obj);
+      for(let i=0;i<this.historyList.length;i++){
+        if(this.historyList[i].tm==result) obj=null;
+      }
+      if(obj) this.historyList.push(obj);
+ 
     },
-    
   },
   mounted() {},
-  watch: {
-
-  },
-  computed: {
-    
-  },
+  watch: {},
+  computed: {},
   created() {
     this.init();
   },
@@ -116,6 +148,13 @@ export default {
 </script>
 
 <style scoped>
+
+.wrap {
+  height: calc(100% - 0px);
+  overflow-y: auto;  
+  margin-left: 10px;
+  margin-right: 10px;
+}
 
 .text {
   font-size: 14px;

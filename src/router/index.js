@@ -13,6 +13,7 @@ let MaterialApplyMain = () => import('@/components/MaterialApply/Main')
 let MassProductionQualityMain = () => import('@/components/MassProductionQuality/Main')
 let FactoryWashMain = () => import('@/components/FactoryWash/Main')
 let MaterielCodeMain = () => import('@/components/MaterielCode/Main')
+let UploadVant = () => import('@/components/Utils/UploadVant')
 // import MassProductionQualityMain from '@/components/MassProductionQuality/Main'
 Vue.use(Router)
 
@@ -87,6 +88,11 @@ export default new Router({
       path: '/test',
       default: 'Test',
       component: Test,
-    }      
+    },
+    {
+      path: '/UploadVant',
+      default: 'UploadVant',
+      component: UploadVant,
+    }    
   ]
 })

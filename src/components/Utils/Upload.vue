@@ -24,8 +24,8 @@ import EXIF from "exif-js";
 export default {
   name: "Upload",
   props: {
-    groupidIn: Number,
-    tableidIn: Number,
+    groupid: Number,
+    tableid: Number,
     visible: {
       type: Boolean,
       default: false
@@ -37,20 +37,12 @@ export default {
   },
   data: function() {
     return {    
-      imgList: []
+      imgList: [],
+
     };
   },
   methods: {    
-    init() {   
-      //console.log(this.groupidIn);
-      if (this.$route.query.groupid) {
-        //url传参
-        this.groupidIn = Number(this.$route.query.groupid);
-      }
-      if (this.$route.query.tableid) {
-        this.tableidIn = Number(this.$route.query.tableid);
-      }
-      //console.log(this.groupidIn);
+    init() {
       if (this.visible) this.search();
     },
     choiceImg(){
@@ -81,8 +73,7 @@ export default {
             resetOrientation(base64, orientation, (resultBase64)=> {
               b64toBlob(resultBase64, (blob)=> {
                 param.append("file", blob, file.name); // 通过append向form对象添加数据
-                // param.append("groupid", that.groupidIn);
-                // param.append("tableid", that.tableidIn);
+              
                 //调用接口上传图片
                 return registerFace(param, config).then(
                   res => {if (res == "ok") that.$message(file.name + "上传成功");             // 上传成功逻辑 
@@ -97,8 +88,8 @@ export default {
           that.$axiosPost           
             .post(APIUTLFile + "?serviceGotoUrl="+
             encodeURIComponent(NetUrlUpload + "service/HttpRequestSkill.ashx?groupid="
-            +that.groupidIn+"&tableid="
-            +that.tableidIn), param)
+            +that.groupid+"&tableid="
+            +that.tableid), param)
             .then(function(response) {
               if (response.data.errcode == 0) {
                 that.search();
@@ -239,10 +230,9 @@ export default {
       this.$axios        
         .get(APIUTL, {
           params: {
-            action: "getImgage",
-            //tableid: this.tableidIn,
-            tableid: this.tableidIn,
-            groupid: this.groupidIn
+            action: "getImgage",            
+            tableid: this.tableid,
+            groupid: this.groupid
           }
         })
         .then(function(response) {
@@ -268,13 +258,9 @@ export default {
     this.init();
   }, 
   watch: {
-    visible(newValue, oldvalue) {
-      //console.warn("visible", newValue, oldvalue);
+    visible(newValue, oldvalue) {     
       if (newValue) this.init();
-    },
-    tableidIn(newVal, oldVal) {
-      //console.warn("tableidIn", newVal, oldVal);
-    }
+    },    
   }
 };
 </script>

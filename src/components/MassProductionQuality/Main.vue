@@ -73,8 +73,8 @@
    
       <Upload
         :visible.sync="uploadVisible"
-        :groupidIn="groupid"
-        :tableidIn="mdata.djid"
+        :groupid="groupid"
+        :tableid="mdata.djid"
         :qx="uploadQx"
       ></Upload>
     

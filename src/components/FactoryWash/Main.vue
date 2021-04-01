@@ -93,6 +93,7 @@
           :key="index"
           :name="index"
           align="center"
+          style="font-size:14px"
         >
           <van-col span="4">{{ item.mc }}</van-col>
           <van-col span="5">{{ item.bzcc }}</van-col>
@@ -243,9 +244,25 @@
       </van-cell-group>
     </div>
 
+<van-overlay z-index="21" :show="uploadVisible" @click="uploadVisible = false">
+  <div class="wrapper" @click.stop>
+     
+
+  <div class="block">
+ 
+      <UploadVant
+        :visible.sync="uploadVisible"
+        :groupid="groupid"
+        :tableid="mdata.djid"
+        :keys.sync="imgKey"
+        :qx="uploadQx"
+      ></UploadVant>
+  </div>
+   </div>
+</van-overlay>
     <van-tabbar v-model="active" @change="handleSelect">
       <van-tabbar-item name="save" icon="certificate">保存</van-tabbar-item>
-
+      <van-tabbar-item name="pic" icon="photo-o">图片</van-tabbar-item>
       <van-tabbar-item name="send" icon="sign">办理</van-tabbar-item>
     </van-tabbar>
   </div>
@@ -263,19 +280,22 @@ import { Popup as VanPopup } from "vant";
 import { Col as VanCol } from "vant";
 import { Row as VanRow } from "vant";
 import { Icon as VanIcon } from "vant";
+import { Overlay as VanOverlay } from "vant";
 import { Divider as VanDivider } from "vant";
 import { guid } from "@/assets/js/utils";
 import { getUrlKey } from "@/assets/js/utils";
+import UploadVant from "@/components/Utils/UploadVant.vue";
 export default {
   name: "FactoryWash",
   components: {
     FieldPickerSingle: () => import("@/components/Utils/FieldPickerSingle"),
     PickerSingle: () => import("@/components/Utils/PickerSingle"),
     PopupRowCol: () => import("@/components/Utils/PopupRowCol"),
+    UploadVant,
     VanButton,
     VanTabbar,
     VanTabbarItem,
-    VanCollapse,
+    VanCollapse,VanOverlay,
     VanCollapseItem,
     VanField,
     VanPopup,
@@ -286,9 +306,12 @@ export default {
   },
   data: function () {
     return {
+      imgKey:[],
       active: "",
       activeNames: [0],
-
+      uploadVisible: false,
+      groupid: 12622,//,22343
+      uploadQx: true,
       mdata: {
         cmzbid: 0,
         gzh: "",
@@ -457,16 +480,18 @@ export default {
   methods: {
     init() {
       if (this.mdata.djid == 0)
-        this.mdata.djid = getUrlKey("MyDJid", window.location.href) || 0;
+        this.mdata.djid = Number(getUrlKey("MyDJid", window.location.href)) || 0;
       if (this.mdata.djid) {
         this.loading = true;
+     
         this.initPromise(this.mdata.djid)
           .then(async (result) => {
+         
             if (result.errcode != 0) {
               this.errMsg(result.errmsg);
               this.loading = false;
               return;
-            }
+            }            
             this.mdata.sphh = result.data[0][0].sphh;
             this.mdata.sphhHidden = result.data[0][0].sphh;
             this.mdata.khmc = result.data[0][0].khmc;
@@ -649,6 +674,11 @@ export default {
       if (index == "save") {
         this.save();
       }
+      if(index=="pic"){
+        console.log(1)
+        this.uploadVisible=true
+        this.active = "";
+      }
     },
 
     save() {
@@ -708,13 +738,13 @@ export default {
           bzcc: this.mdata.bwDetail[i].bzcc,
         });
       }
+      param.imgKey=this.imgKey;
       // console.log(param);
       this.savePromise(param)
         .then((r) => {
           if (r.errcode == 0) {
             this.$message("保存成功");
-            this.mdata.djid = r.data[0].djid;
-
+            this.mdata.djid = r.data[0].djid;            
             this.goflowPromise(this.mdata.djid)
               .then((r) => {
                 if (r.errcode == 0) {
@@ -877,7 +907,13 @@ export default {
     },
   },
   mounted() {},
-  watch: {},
+  watch: {
+      imgKey(newValue, oldvalue) {
+      console.warn("imgKey", newValue, oldvalue);
+       this.errMsg(newValue);
+     
+    },
+  },
   computed: {},
   created() {
     llApp.init();
@@ -887,6 +923,19 @@ export default {
 </script>
 
 <style scoped>
+
+  .wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
+.block {
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+  }
 .wrap {
   height: calc(100% - 50px);
   overflow-y: auto;

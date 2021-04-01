@@ -1,202 +1,286 @@
 <template>
   <div id="Detail">
-    <el-container v-show="colVisible">          
+    <el-container v-show="colVisible">
       <el-main :style="mainHeight">
-      <!--详情页-->
-      <div v-loading="loading" >
-        <el-collapse style="margin: 0px 0px 0px 0px" v-model="activeName">
-          <el-collapse-item title="基本信息" disabled name="1">
-            <div
+        <!--详情页-->
+        <div v-loading="loading">
+          <el-collapse style="margin: 0px 0px 0px 0px" v-model="activeName">
+            <el-collapse-item title="基本信息" disabled name="1">
+              <van-cell-group>
+                <van-cell
+                  v-for="item in mdata.title"
+                  :key="item.mc"
+                  :title="item.mc"
+                  :value="item.value"
+                />
+              </van-cell-group>
+
+              <!-- <div
               v-for="item in mdata.title"
               :key="item.mc"
               class="text item title-context"
             >
               <div>{{ item.mc }}</div>
               <div style="text-align: right">{{ item.value }}</div>
-            </div>
-            <div
-              v-for="item in mdata.title_cl"
-              :key="item.mc + item.ghs"
-              class="text item"
-            >
-              <div>{{ item.ghs }}</div>
-              <div class="title-context">
-                <div>{{ item.mc }}</div>
-                <div style="text-align: right">{{ item.value }}</div>
-              </div>
-            </div>
-          </el-collapse-item>
-          <el-collapse-item title="标签信息" name="2">
-            <div
-              v-for="item in mdata.bq"
-              :key="item.mc + item.value"
-              class="text item title-context"
-            >
-              <img
-                v-if="item.lx == 'img'"
-                style="width: 3mm"
-                v-bind:src="item.mc"
-              />
-              <div v-else>{{ item.mc.length == 0 ? "&nbsp;" : item.mc }}</div>
-              <div style="text-align: right">{{ item.value }}</div>
-            </div>
-          </el-collapse-item>
-          <el-collapse-item title="工艺单" name="3">
-            <a
-              v-show="mdata.gydSrc.length > 0 ? true : false"
-              :href="mdata.gydSrc"
-              >查看</a
-            >
-          </el-collapse-item>
-          <el-collapse-item title="配料卡" name="4">
-            <a
-              v-show="mdata.plkSrc.length > 0 ? true : false"
-              :href="mdata.plkSrc"
-              >查看</a
-            >
-          </el-collapse-item>
-          <el-collapse-item title="面料报告" name="5">
-            <div
-              v-for="item in mdata.mlbgList"
-              :key="item.Docid"
-              class="text item"
-            >
-              <a
-                @click="
-                  item.show = true;
-                  colVisible = false;
-                "
-                >{{ item.Bgbh }}</a
-              >
-            </div>
-          </el-collapse-item>
-          <el-collapse-item title="生产过程信息记录" name="6">
-            <input
-              type="file"
-              name="file"
-              ref="filElem"
-              class="upload"
-              style="display: none"
-              multiple
-              @change="uploadImg"
-            />
-            <div
-              v-for="item in mdata.lxDataList.detail"
-              v-bind:key="item.Id"
-              class="text item"
-            >
-              <el-card class="box-card" v-if="item.Id == 0">
-                <div slot="header" class="clearfix">
-                  <el-button type="primary" @click="saveImg(item.Id)"
-                    >新增</el-button
-                  >
-                </div>
-                <div class="text item">
-                  跟踪事项：
-                  <el-input type="textarea" v-model="item.Cpbz"></el-input>
-                </div>
-              </el-card>
-              <div v-else>
-                <div style="text-align: center; margin-bottom: 5px">
-                  {{ item.Zdrq }}
-                </div>
-                <el-row>
-                  <el-col :span="3">
-                    <div class="block">
-                      <el-avatar
-                        shape="square"
-                        style="font-size: 9px"
-                        :size="40"
-                        >{{ item.Zdr }}</el-avatar
-                      >
-                    </div>
-                  </el-col>
-                  <el-col :span="18">
-                    <el-image
-                      v-for="img in item.imgList"
-                      :key="img.URLAddress"
-                      style="width: 100px; height: 100px; margin-left: 10px"
-                      :src="img.URLAddress"
-                      :preview-src-list="getImgList(item.imgList)"
-                    ></el-image>
-                    <div style="margin-left: 10px">{{ item.Cpbz }}</div>
-                  </el-col>
-                  <el-col :span="3">
-                    <el-button
-                      type="success"
-                      icon="el-icon-upload"
-                      circle
-                      @click="choiceImg(item.Id)"
-                      v-show="item.Zdr == userInfo.cname ? true : false"
-                    ></el-button>
-                  </el-col>
-                </el-row>
-              </div>
-            </div>
-          </el-collapse-item>
-          <el-collapse-item :title="'成品报告 入库数：' + this.Rksl" name="7">
-            <el-table :data="mdata.rkbgList" style="width: 100%">
-              <el-table-column label="报告号" width="30%">
-                <template slot-scope="scope">
-                  <a
-                    :href="
-                      'http://webt.lilang.com:9001/tl_yf/flowstatic/flowstatic.html?flowid=' +
-                      scope.row.Flowid +
-                      '&tzid=1&docid=' +
-                      scope.row.Docid +
-                      '&ppdm=&action=getFlowLog&file=../../service/HttpRequestSkill.ashx'
-                    "
-                  >
-                    {{ scope.row.Bgbh }}
-                  </a>
-                </template>
-              </el-table-column>
-              <el-table-column prop="Zpdjg" label="入库意见" width="40%">
-              </el-table-column>
-              <el-table-column prop="Sl" width="30%" label="数量">
-              </el-table-column>
-            </el-table>
-          </el-collapse-item>
-          <el-collapse-item :title="'退货分析 退货数：' + this.Tksl" name="8">
-            <el-table :data="mdata.thList" style="width: 100%">
-              <el-table-column label="退货原因" prop="Thyy" width="25%">
-              </el-table-column>
-              <el-table-column prop="Zrgs" label="责任归属" width="20%">
-              </el-table-column>
-              <el-table-column prop="Cljg" width="30%" label="判定结果">
-              </el-table-column>
-              <el-table-column prop="Sl" width="10%" label="数量">
-              </el-table-column>
-              <el-table-column prop="Npdr" width="30%" label="判定人">
-              </el-table-column>
-            </el-table>
-          </el-collapse-item>
-        </el-collapse>
+            </div> -->
 
-        <!-- <div class="gobacFloatDiv" ref="gobacFloatDiv">
+              <van-cell-group
+                v-for="item in mdata.title_cl"
+                :key="item.mc + item.ghs"
+                :title="item.ghs"
+              >
+                <van-cell :title="item.mc" :value="item.value" />
+              </van-cell-group>
+
+              <!-- <div
+                v-for="item in mdata.title_cl"
+                :key="item.mc + item.ghs"
+                class="text item"
+              >
+                <div>{{ item.ghs }}</div>
+                <div class="title-context">
+                  <div>{{ item.mc }}</div>
+                  <div style="text-align: right">{{ item.value }}</div>
+                </div>
+              </div> -->
+            </el-collapse-item>
+            <el-collapse-item title="标签信息" name="2">
+              <van-cell-group>
+                <van-cell
+                  v-for="item in mdata.bq"
+                  :key="item.mc + item.value"
+                  :value="item.value"
+                >
+                  <template #title>
+                    <img
+                      v-if="item.lx == 'img'"
+                      style="width: 3mm"
+                      v-bind:src="item.mc"
+                    />
+                    <span v-else class="custom-title">{{ item.mc }}</span>
+                  </template>
+                </van-cell>
+              </van-cell-group>
+
+              <!-- <div
+                v-for="item in mdata.bq"
+                :key="item.mc + item.value"
+                class="text item title-context"
+              >
+                <img
+                  v-if="item.lx == 'img'"
+                  style="width: 3mm"
+                  v-bind:src="item.mc"
+                />
+                <div v-else>{{ item.mc.length == 0 ? "&nbsp;" : item.mc }}</div>
+                <div style="text-align: right">{{ item.value }}</div>
+              </div> -->
+            </el-collapse-item>
+            <el-collapse-item title="工艺单" name="3">
+              <a
+                v-show="mdata.gydSrc.length > 0 ? true : false"
+                :href="mdata.gydSrc"
+                >查看</a
+              >
+            </el-collapse-item>
+            <el-collapse-item title="配料卡" name="4">
+              <a
+                v-show="mdata.plkSrc.length > 0 ? true : false"
+                :href="mdata.plkSrc"
+                >查看</a
+              >
+            </el-collapse-item>
+            <el-collapse-item title="面料报告" name="5">
+              <van-cell-group>
+                <van-cell
+                  v-for="item in mdata.mlbgList"
+                  :key="item.Docid"
+                  :title="item.Bgbh"
+                  @click="
+                    item.show = true;
+                    colVisible = false;
+                  "
+                  is-link
+                />
+              </van-cell-group>
+
+              <!-- <div
+                v-for="item in mdata.mlbgList"
+                :key="item.Docid"
+                class="text item"
+              >
+                <a
+                  @click="
+                    item.show = true;
+                    colVisible = false;
+                  "
+                  >{{ item.Bgbh }}</a
+                >
+              </div> -->
+            </el-collapse-item>
+            <el-collapse-item title="实验室检测" name="9">
+            </el-collapse-item>
+            <el-collapse-item title="产前封样" name="10">
+            </el-collapse-item>            
+            <el-collapse-item title="生产过程信息记录" name="6">
+              <input
+                type="file"
+                name="file"
+                ref="filElem"
+                class="upload"
+                style="display: none"
+                multiple
+                @change="uploadImg"
+              />
+              <div
+                v-for="item in mdata.lxDataList.detail"
+                v-bind:key="item.Id"
+                class="text item"
+              >
+                <el-card class="box-card" v-if="item.Id == 0">
+                  <div slot="header" class="clearfix">
+                    <el-button type="primary" @click="saveImg(item.Id)"
+                      >新增</el-button
+                    >
+                  </div>
+                  <div class="text item">
+                    跟踪事项：
+                    <el-input type="textarea" v-model="item.Cpbz"></el-input>
+                  </div>
+                </el-card>
+                <div v-else>
+                  <div style="text-align: center; margin-bottom: 5px">
+                    {{ item.Zdrq }}
+                  </div>
+                  <el-row>
+                    <el-col :span="3">
+                      <div class="block">
+                        <el-avatar
+                          shape="square"
+                          style="font-size: 9px"
+                          :size="40"
+                          >{{ item.Zdr }}</el-avatar
+                        >
+                      </div>
+                    </el-col>
+                    <el-col :span="18">
+                      <el-image
+                        v-for="img in item.imgList"
+                        :key="img.URLAddress"
+                        style="width: 100px; height: 100px; margin-left: 10px"
+                        :src="img.URLAddress"
+                        :preview-src-list="getImgList(item.imgList)"
+                      ></el-image>
+                      <div style="margin-left: 10px">{{ item.Cpbz }}</div>
+                    </el-col>
+                    <el-col :span="3">
+                      <el-button
+                        type="success"
+                        icon="el-icon-upload"
+                        circle
+                        @click="choiceImg(item.Id)"
+                        v-show="item.Zdr == userInfo.cname ? true : false"
+                      ></el-button>
+                    </el-col>
+                  </el-row>
+                </div>
+              </div>
+            </el-collapse-item>
+            
+            <el-collapse-item :title="'成品报告 入库数：' + this.Rksl" name="7">
+              <van-row style="font-weight: 800">
+                <van-col span="7">报告号</van-col>
+                <van-col span="10">入库意见</van-col>
+                <van-col span="7">数量</van-col>
+              </van-row>
+
+              <van-row
+                type="flex"
+                v-for="(item, index) in mdata.rkbgList"
+                :key="index"
+                :name="index"
+                align="center"
+                style="font-size: 14px"
+                @click="test"
+              >
+                <van-col span="7">{{ item.Bgbh }}</van-col>
+                <van-col span="10">{{ item.Zpdjg }}</van-col>
+                <van-col span="7">{{ item.Sl }}</van-col>
+              </van-row>
+
+              <el-table :data="mdata.rkbgList" style="width: 100%">
+                <el-table-column label="报告号" width="30%">
+                  <template slot-scope="scope">
+                    <a
+                      :href="
+                        'http://webt.lilang.com:9001/tl_yf/flowstatic/flowstatic.html?flowid=' +
+                        scope.row.Flowid +
+                        '&tzid=1&docid=' +
+                        scope.row.Docid +
+                        '&ppdm=&action=getFlowLog&file=../../service/HttpRequestSkill.ashx'
+                      "
+                    >
+                      {{ scope.row.Bgbh }}
+                    </a>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="Zpdjg" label="入库意见" width="40%">
+                </el-table-column>
+                <el-table-column prop="Sl" width="30%" label="数量">
+                </el-table-column>
+              </el-table>
+            </el-collapse-item>
+            <el-collapse-item :title="'退货分析 退货数：' + this.Tksl" name="8">
+              <el-table :data="mdata.thList" style="width: 100%">
+                <el-table-column label="退货原因" prop="Thyy" width="25%">
+                </el-table-column>
+                <el-table-column prop="Zrgs" label="责任归属" width="20%">
+                </el-table-column>
+                <el-table-column prop="Cljg" width="30%" label="判定结果">
+                </el-table-column>
+                <el-table-column prop="Sl" width="10%" label="数量">
+                </el-table-column>
+                <el-table-column prop="Npdr" width="30%" label="判定人">
+                </el-table-column>
+              </el-table>
+            </el-collapse-item>
+
+          </el-collapse>
+
+          <!-- <div class="gobacFloatDiv" ref="gobacFloatDiv">
           <el-button type="primary" @click="scanGoback">返回</el-button>
         </div> -->
-      </div>
+        </div>
       </el-main>
-      <el-footer :style="footHeight" > 
-        <NgvCollecBtn  @goback="scanGoback" ></NgvCollecBtn> 
-      </el-footer>      
+      <el-footer :style="footHeight">
+        <NgvCollecBtn @goback="scanGoback"></NgvCollecBtn>
+      </el-footer>
     </el-container>
 
     <div v-for="item in mdata.mlbgList" :key="item.Docid">
       <FlowLog v-if="item.show" @goback="mlbgGoback(item)" v-bind:parIn="item">
       </FlowLog>
     </div>
+    <div v-for="item in mdata.rkbgList" :key="item.Docid">
+      <FlowLog v-if="item.show" @goback="mlbgGoback(item)" v-bind:parIn="item">
+      </FlowLog>
+    </div>    
   </div>
 </template>
 
 <script>
 import EXIF from "exif-js";
+import { Field as VanField } from "vant";
+import { Col as VanCol } from "vant";
+import { Row as VanRow } from "vant";
 export default {
   name: "Detail",
-  components: {    
-    'FlowLog': () => import('@/components/Utils/FlowLog'),    
-    'NgvCollecBtn': () => import('@/components/Utils/NgvCollecBtn'), 
+  components: {
+    FlowLog: () => import("@/components/Utils/FlowLog"),
+    NgvCollecBtn: () => import("@/components/Utils/NgvCollecBtn"),
+    VanField,
+    VanRow,
+    VanCol,
   },
   props: {
     sphhIn: String,
@@ -204,17 +288,17 @@ export default {
   data: function () {
     return {
       mainHeight: {
-        height: '60px'
-      },   
+        height: "60px",
+      },
       footHeight: {
-        height: '60px',
-        marginLeft: '20px',
-        marginRight: '20px',
-        marginBottom: '20px',
-        lineHeight: '60px',
-        textAlign: 'right'
-      },  
-              
+        height: "60px",
+        marginLeft: "20px",
+        marginRight: "20px",
+        marginBottom: "20px",
+        lineHeight: "60px",
+        textAlign: "right",
+      },
+
       userInfo: this.$status.userInfo,
       mdata: {
         sphh: this.sphhIn,
@@ -278,10 +362,14 @@ export default {
       //window.addEventListener("scroll", this.scroll, true);
       this.search();
     },
-    getHeight () {
-      this.mainHeight.height = window.innerHeight -  Number(this.footHeight.height.replace('px', '')) -  Number(this.footHeight.marginBottom.replace('px', '')) + 'px'
+    getHeight() {
+      this.mainHeight.height =
+        window.innerHeight -
+        Number(this.footHeight.height.replace("px", "")) -
+        Number(this.footHeight.marginBottom.replace("px", "")) +
+        "px";
       // this.tableHeight = Number(this.mainHeight.height.replace('px', '')) - 40
-    },    
+    },
     // scroll() {
     //   var scrollTop =
     //     document.documentElement.scrollTop || document.body.scrollTop;
@@ -305,7 +393,7 @@ export default {
       return arr;
     },
     scanGoback() {
-      // this.colVisible = false;      
+      // this.colVisible = false;
       // window.removeEventListener("scroll", this.scroll,true);
       this.mdata.sphh = "";
       this.$emit("goback");
@@ -448,8 +536,13 @@ export default {
       if (scData.Rksl && scData.Rksl > 0) {
         if (scData.RkList && scData.RkList.length > 0) {
           for (var i = 0; i < scData.RkList.length; i++) {
+            scData[i].show=false
+            scData[i].tzid=1;
+            scData[i].ppdm="";
+            scData[i].action = "getFlowLog";
             this.mdata.rkbgList.push(scData.RkList[i]);
           }
+          console.log(this.mdata.rkbgList)
         }
       }
       if (scData.JYBGList && scData.JYBGList.length > 0) {
@@ -802,7 +895,10 @@ export default {
       this.$axios
         .get(APIUTL, {
           params: {
-            serviceGotoUrl: NetUrl+(NetUrl.indexOf("192.168.35.231")>=0?"oa":"qywx") + "/project/erpscan/yf_cl_sphh_xsb.aspx",
+            serviceGotoUrl:
+              NetUrl +
+              (NetUrl.indexOf("192.168.35.231") >= 0 ? "oa" : "qywx") +
+              "/project/erpscan/yf_cl_sphh_xsb.aspx",
             serviceGoto: ".net",
             encoding: "gb2312",
             sphh: result,
@@ -845,7 +941,8 @@ export default {
         .post(
           APIUTL +
             "?serviceGotoUrl=" +
-            NetUrl +(NetUrl.indexOf("192.168.35.231")>=0?"oa":"qywx")+
+            NetUrl +
+            (NetUrl.indexOf("192.168.35.231") >= 0 ? "oa" : "qywx") +
             "/project/erpscan/sphhinfo.ashx" +
             "&serviceGoto=.net&encoding=gb2312",
           param
@@ -1181,8 +1278,8 @@ export default {
   created() {
     this.init();
     // 页面创建时执行一次getHeight进行赋值，顺道绑定resize事件
-    window.addEventListener('resize', this.getHeight)
-    this.getHeight()    
+    window.addEventListener("resize", this.getHeight);
+    this.getHeight();
   },
 };
 </script>

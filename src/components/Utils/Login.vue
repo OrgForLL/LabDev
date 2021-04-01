@@ -1,50 +1,50 @@
 <template>
-<div v-loading="loading" v-show="show">
-     <h2 style="text-align: center">Login In </h2>
+  <div style="margin: 10px" v-loading="loading" v-show="show">
+    <h2 style="text-align: center">Login In</h2>
     <el-form>
-    <el-form-item >       
+      <el-form-item>
         <el-col :span="4">用户名：</el-col>
-        <el-col :span="20"><el-input v-model="mdata.username"></el-input></el-col>
-    </el-form-item>
-    <el-form-item >       
+        <el-col :span="20"
+          ><el-input v-model="mdata.username"></el-input
+        ></el-col>
+      </el-form-item>
+      <el-form-item>
         <el-col :span="4">密 码:</el-col>
-        <el-col :span="20"><el-input v-model="mdata.userpass"></el-input></el-col>
-    </el-form-item>        
-    </el-form> 
-    <div class="errtips">{{this.mdata.errmsg}}</div>
-    <div style="text-align:right;">
-      <a-button type="primary" @click="login">login</a-button>
+        <el-col :span="20"
+          ><el-input type="password" v-model="mdata.userpass"></el-input
+        ></el-col>
+      </el-form-item>
+    </el-form>
+    <div class="errtips">{{ this.mdata.errmsg }}</div>
+    <div style="text-align: right">
+      <el-button type="primary" @click="login">login</el-button>
     </div>
-</div>
+  </div>
 </template>
 
 <script>
-import { getUrlKey } from '@/assets/js/utils';
-import myStore from '@/components/Utils/Store'; 
+import { getUrlKey } from "@/assets/js/utils";
+import myStore from "@/components/Utils/Store";
 export default {
   name: "Login",
-  components: {
-  },
+  components: {},
   data: function () {
     return {
-      mdata: {        
+      mdata: {
         username: "",
         userpass: "",
-        errmsg: "",        
+        errmsg: "",
       },
-      show:false,//这个用来自动登陆的,所以界面不用展示
-      loading: true//这个用来自动登陆的,所以界面不用展示
+      show: false, //这个用来自动登陆的,所以界面不用展示
+      loading: true, //这个用来自动登陆的,所以界面不用展示
     };
   },
   methods: {
     init() {
-     this.imLogin();
+      this.imLogin();
     },
-    doLogin() {
-
-    },
-        login() {
- 
+    doLogin() {},
+    login() {
       let param = new Object();
       param.password = this.mdata.userpass;
       param.name = this.mdata.username;
@@ -63,10 +63,13 @@ export default {
           obj.cname = response.data.data.cname;
           myStore.userInfo = obj;
           this.show = false;
-          let url=getUrlKey("path", window.location.href);          
-          this.$router.push({ path: url.replace("apptoken="+getUrlKey("apptoken", window.location.href),
-          ""
-          ) });
+          let url = getUrlKey("path", window.location.href);
+          this.$router.push({
+            path: url.replace(
+              "apptoken=" + getUrlKey("apptoken", window.location.href),
+              ""
+            ),
+          });
         } else {
           console.log(response.data.message);
           this.mdata.errmsg = response.data.message;
@@ -74,42 +77,38 @@ export default {
           this.show = true;
         }
       });
-      
     },
-    imLogin(){
-        //取IM中身份        
-        let param = new Object(); 
-        param.action = "getUserinfo";
-        param.token = getUrlKey("apptoken",window.location.href);
-        param.dept = "";
-        param.Parameter = [1];
-        param.orgid=0;
-        this.$axiosPost          
-        .post(APIUTLOuth ,  param)
-        .then(response=> {  
-        if (response.data.code == 200) {       
-            let obj={};
-            obj.userid=response.data.data.userid
-            obj.cname=response.data.data.cname
-            myStore.userInfo=obj;    
-            myStore.userInfo.apptoken=param.token
-            // console.log(myStore.userInfo);            
-            this.show=false;
-            this.$router.push({ path: getUrlKey("path",window.location.href) })
+    imLogin() {
+      //取IM中身份
+      let param = new Object();
+      param.action = "getUserinfo";
+      param.token = getUrlKey("apptoken", window.location.href);
+      param.dept = "";
+      param.Parameter = [1];
+      param.orgid = 0;
+      this.$axiosPost.post(APIUTLOuth, param).then((response) => {
+        if (response.data.code == 200) {
+          let obj = {};
+          obj.userid = response.data.data.userid;
+          obj.cname = response.data.data.cname;
+          myStore.userInfo = obj;
+          myStore.userInfo.apptoken = param.token;
+          // console.log(myStore.userInfo);
+          this.show = false;
+          this.$router.push({ path: getUrlKey("path", window.location.href) });
         } else {
-            console.log(response.data.message);
-            this.mdata.errmsg=response.data.message;
-            this.loading=false;
-            this.show=true;
+          console.log(response.data.message);
+          this.mdata.errmsg = response.data.message;
+          this.loading = false;
+          this.show = true;
         }
-        });
-        //取IM中身份 end        
-    }
+      });
+      //取IM中身份 end
+    },
   },
   mounted() {},
   watch: {},
-  computed: {  
-  },
+  computed: {},
   created() {
     this.init();
   },
@@ -117,9 +116,9 @@ export default {
 </script>
 
 <style>
-.login_dialog{
-    width: 100%;    
-    height: 100%;
-    margin-top:0px !important;
+.login_dialog {
+  width: 100%;
+  height: 100%;
+  margin-top: 0px !important;
 }
 </style>
