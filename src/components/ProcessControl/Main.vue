@@ -1,10 +1,10 @@
 <template>
   <div
     id="ProcessControl"
-    class="wrap"
+    
   >
     <div v-loading="loading">
-      <div v-show="scanVisible">
+      <div class="wrap" v-show="scanVisible">
         <h2 style="text-align: center">产品质量记录信息</h2>
         <van-cell-group>
           <van-field   v-model="mdata.sphh" label="货号" />
@@ -20,25 +20,6 @@
         <van-button block size="small" @click="scan" type="primary"
           >扫描</van-button
         >
-
-        <!-- <el-form :model="mdata">
-          <el-form-item>
-            <el-col :span="4">货号:</el-col>
-            <el-col :span="20"
-              ><el-input v-model="mdata.sphh"></el-input
-            ></el-col>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" style="width: 100%" @click="search"
-              >查询</el-button
-            >
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" style="width: 100%" @click="scan"
-              >扫描</el-button
-            >
-          </el-form-item>
-        </el-form> -->
         <van-divider
           :style="{
             color: '#1989fa',
@@ -52,17 +33,7 @@
         <van-cell-group  >
           <van-cell v-for="item in historyList" :key="item.tm" :title="item.tm"
            @click="bqLogSearch(item)" is-link />
-        </van-cell-group>
-        
-
-        <!-- <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <span>扫描记录</span>
-          </div>
-          <div v-for="item in historyList" :key="item.tm" class="text item">
-            <a href="#" @click.stop="bqLogSearch(item)">{{ item.tm }}</a>
-          </div>
-        </el-card> -->
+        </van-cell-group>   
       </div>
       <!--详情页-->
       <div v-if="colVisible">
@@ -152,8 +123,8 @@ export default {
 .wrap {
   height: calc(100% - 0px);
   overflow-y: auto;  
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 .text {

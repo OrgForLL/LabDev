@@ -1,11 +1,14 @@
 <template>
   <div id="Detail">
-    <el-container v-show="colVisible">
-      <el-main :style="mainHeight">
+    <div  v-show="colVisible">
+   
         <!--详情页-->
         <div v-loading="loading">
-          <el-collapse style="margin: 0px 0px 0px 0px" v-model="activeName">
-            <el-collapse-item title="基本信息" disabled name="1">
+          <van-collapse class="wrapDetail" style="margin: 0px 10px 0px 10px" v-model="activeName">
+            <van-collapse-item title="基本信息" disabled name="1">
+              <template #right-icon>
+                    <div><van-icon name="setting-o" /></div>
+              </template>              
               <van-cell-group>
                 <van-cell
                   v-for="item in mdata.title"
@@ -43,8 +46,8 @@
                   <div style="text-align: right">{{ item.value }}</div>
                 </div>
               </div> -->
-            </el-collapse-item>
-            <el-collapse-item title="标签信息" name="2">
+            </van-collapse-item>
+            <van-collapse-item title="标签信息" name="2">
               <van-cell-group>
                 <van-cell
                   v-for="item in mdata.bq"
@@ -61,36 +64,22 @@
                   </template>
                 </van-cell>
               </van-cell-group>
-
-              <!-- <div
-                v-for="item in mdata.bq"
-                :key="item.mc + item.value"
-                class="text item title-context"
-              >
-                <img
-                  v-if="item.lx == 'img'"
-                  style="width: 3mm"
-                  v-bind:src="item.mc"
-                />
-                <div v-else>{{ item.mc.length == 0 ? "&nbsp;" : item.mc }}</div>
-                <div style="text-align: right">{{ item.value }}</div>
-              </div> -->
-            </el-collapse-item>
-            <el-collapse-item title="工艺单" name="3">
+            </van-collapse-item>
+            <van-collapse-item title="工艺单" name="3">
               <a
                 v-show="mdata.gydSrc.length > 0 ? true : false"
                 :href="mdata.gydSrc"
                 >查看</a
               >
-            </el-collapse-item>
-            <el-collapse-item title="配料卡" name="4">
+            </van-collapse-item>
+            <van-collapse-item title="配料卡" name="4">
               <a
                 v-show="mdata.plkSrc.length > 0 ? true : false"
                 :href="mdata.plkSrc"
                 >查看</a
               >
-            </el-collapse-item>
-            <el-collapse-item title="面料报告" name="5">
+            </van-collapse-item>
+            <van-collapse-item title="面料报告" name="5">
               <van-cell-group>
                 <van-cell
                   v-for="item in mdata.mlbgList"
@@ -103,27 +92,11 @@
                   is-link
                 />
               </van-cell-group>
-
-              <!-- <div
-                v-for="item in mdata.mlbgList"
-                :key="item.Docid"
-                class="text item"
-              >
-                <a
-                  @click="
-                    item.show = true;
-                    colVisible = false;
-                  "
-                  >{{ item.Bgbh }}</a
-                >
-              </div> -->
-            </el-collapse-item>
-            <el-collapse-item title="实验室检测" name="9">
-            </el-collapse-item>
-            <el-collapse-item title="产前封样" name="10">
-            </el-collapse-item>            
-            <el-collapse-item title="生产过程信息记录" name="6">
-              <input
+            </van-collapse-item>
+            <van-collapse-item title="实验室检测" name="9"> </van-collapse-item>
+            <van-collapse-item title="产前封样" name="10"> </van-collapse-item>
+            <van-collapse-item title="生产过程信息记录" name="6">
+              <!-- <input
                 type="file"
                 name="file"
                 ref="filElem"
@@ -131,67 +104,116 @@
                 style="display: none"
                 multiple
                 @change="uploadImg"
-              />
+              /> -->
               <div
                 v-for="item in mdata.lxDataList.detail"
                 v-bind:key="item.Id"
                 class="text item"
               >
-                <el-card class="box-card" v-if="item.Id == 0">
-                  <div slot="header" class="clearfix">
-                    <el-button type="primary" @click="saveImg(item.Id)"
-                      >新增</el-button
-                    >
-                  </div>
-                  <div class="text item">
-                    跟踪事项：
-                    <el-input type="textarea" v-model="item.Cpbz"></el-input>
-                  </div>
-                </el-card>
+              <div v-if="item.Id == 0">
+                 <van-divider>跟踪事项</van-divider>
+                <van-field
+                  v-model="item.Cpbz"
+                  rows="2"
+                  autosize                  
+                  type="textarea"
+                  placeholder="请输入跟踪事项"
+                >      
+                 <template #button>
+                  <van-button size="small" type="primary" @click="saveImg(item.Id)">新增</van-button>
+                </template>
+                </van-field>            
+              </div>              
                 <div v-else>
                   <div style="text-align: center; margin-bottom: 5px">
-                    {{ item.Zdrq }}
+                    <van-divider><van-icon name="contact"></van-icon>{{ item.Zdr }} {{ item.Zdrq }}</van-divider>                     
                   </div>
-                  <el-row>
-                    <el-col :span="3">
-                      <div class="block">
+                  <van-row>
+                    <!-- <van-col :span="3"> -->                     
+                      <!-- <div class="block">
                         <el-avatar
                           shape="square"
-                          style="font-size: 9px"
+                          style="font-size: 12px"
                           :size="40"
                           >{{ item.Zdr }}</el-avatar
                         >
-                      </div>
-                    </el-col>
-                    <el-col :span="18">
-                      <el-image
+                      </div> -->
+                    <!-- </van-col> -->
+                    <van-col :span="21">
+                      <van-grid :border="false" :column-num="2">
+                        <van-grid-item 
+                        v-for="(img,index) in item.imgList"
+                        :key="img.URLAddress" 
+                        >
+                          <van-image :src="img.URLAddress" width="100" @click="ImageClick(item,index)" />
+                        </van-grid-item>
+                       
+                      </van-grid>
+
+                      <!-- <van-image
                         v-for="img in item.imgList"
-                        :key="img.URLAddress"
-                        style="width: 100px; height: 100px; margin-left: 10px"
+                        :key="img.URLAddress"                       
                         :src="img.URLAddress"
-                        :preview-src-list="getImgList(item.imgList)"
-                      ></el-image>
+                      ></van-image> -->                     
                       <div style="margin-left: 10px">{{ item.Cpbz }}</div>
-                    </el-col>
-                    <el-col :span="3">
-                      <el-button
-                        type="success"
-                        icon="el-icon-upload"
-                        circle
-                        @click="choiceImg(item.Id)"
+                    </van-col>
+                    <van-col :span="3">
+                      
+                      <van-button icon="upgrade" size="small" type="primary" 
+                      @click="choiceImg(item.Id,mdata.lxDataList.groupid)"
                         v-show="item.Zdr == userInfo.cname ? true : false"
-                      ></el-button>
-                    </el-col>
-                  </el-row>
+                      />                      
+                    </van-col>
+                  </van-row>
                 </div>
               </div>
-            </el-collapse-item>
-            
-            <el-collapse-item :title="'成品报告 入库数：' + this.Rksl" name="7">
+            </van-collapse-item >
+            <van-collapse-item :title="'产中拍照'" name="11">
+              <van-collapse  style="margin: 0px 0px 0px 0px" v-model="imgActiveName">
+                <van-collapse-item 
+                v-for="lbitem in mdata.groupname"
+                :key="lbitem.groupname"
+                :title="lbitem.groupname"
+                :name="lbitem.key"
+                >
+
+              <van-grid :border="false" :column-num="2">
+
+              <van-grid-item
+                v-for="item in filterImg(lbitem.groupname)"
+                  :key="item.groupid"
+              >
+                  <van-row  v-if="item.imgList.length>0">                    
+                    <van-col :span="24">                     
+                        <van-grid :border="false" :column-num="2">
+                          <van-grid-item 
+                          v-for="(img,index) in item.imgList"
+                          :key="img.URLAddress" 
+                          >
+                            <van-image v-if="item.name=='其它' || 1==1" :src="img.URLAddress" width="100" @click="choiceImg(mdata.zlmxid,item.groupid)" />
+                            <van-image v-else :src="img.URLAddress" width="100" @click="ImageClick(item,index)" />
+                          </van-grid-item>
+                        </van-grid>   
+                    </van-col>                  
+                  </van-row>
+                   <div v-else >                     
+                       <van-image :src="'http://webt.lilang.com:9001/tl_yf/vueimg/'+item.default" width="100" @click="choiceImg(mdata.zlmxid,item.groupid)" />                      
+                    </div>
+
+              </van-grid-item>              
+            </van-grid>
+
+                </van-collapse-item>
+              </van-collapse>
+
+
+            </van-collapse-item>
+            <van-collapse-item :title="'成品报告 入库数：' + this.Rksl" name="7">
               <van-row style="font-weight: 800">
                 <van-col span="7">报告号</van-col>
                 <van-col span="10">入库意见</van-col>
-                <van-col span="7">数量</van-col>
+                <van-col span="5">数量</van-col>
+                <van-col span="2"></van-col>
               </van-row>
 
               <van-row
@@ -201,61 +223,63 @@
                 :name="index"
                 align="center"
                 style="font-size: 14px"
-                @click="test"
+                @click="
+                  item.show = true;
+                  colVisible = false;
+                "
+                :class="[index%2==0 ? 'thListColr' : '']"   
               >
                 <van-col span="7">{{ item.Bgbh }}</van-col>
                 <van-col span="10">{{ item.Zpdjg }}</van-col>
-                <van-col span="7">{{ item.Sl }}</van-col>
+                <van-col span="5">{{ item.Sl }}</van-col>
+                <van-col span="2"><van-icon name="arrow" /></van-col>
+              </van-row>
+            
+            </van-collapse-item>
+            <van-collapse-item :title="'退货分析 退货数：' + this.Tksl" name="8">
+              <van-row style="font-weight: 800">
+                <van-col span="5">退货原因</van-col>
+                <van-col span="5">责任归属</van-col>
+                <van-col span="5">判定结果</van-col>
+                <van-col span="4">数量</van-col>
+                <van-col span="5">判定人</van-col>
+              </van-row>
+              <van-row
+                type="flex"
+                v-for="(item, index) in mdata.thList"
+                :key="index"
+                :name="index"
+                align="center"
+                style="font-size: 14px"  
+                :class="[index%2==0 ? 'thListColr' : '']"              
+              >
+                <van-col span="5">{{item.Thyy}}</van-col>
+                <van-col span="5">{{item.Zrgs}}</van-col>
+                <van-col span="5">{{item.Cljg}}</van-col>
+                <van-col span="4">{{item.Sl}}</van-col>
+                <van-col span="5">{{item.Npdr}}</van-col>
               </van-row>
 
-              <el-table :data="mdata.rkbgList" style="width: 100%">
-                <el-table-column label="报告号" width="30%">
-                  <template slot-scope="scope">
-                    <a
-                      :href="
-                        'http://webt.lilang.com:9001/tl_yf/flowstatic/flowstatic.html?flowid=' +
-                        scope.row.Flowid +
-                        '&tzid=1&docid=' +
-                        scope.row.Docid +
-                        '&ppdm=&action=getFlowLog&file=../../service/HttpRequestSkill.ashx'
-                      "
-                    >
-                      {{ scope.row.Bgbh }}
-                    </a>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="Zpdjg" label="入库意见" width="40%">
-                </el-table-column>
-                <el-table-column prop="Sl" width="30%" label="数量">
-                </el-table-column>
-              </el-table>
-            </el-collapse-item>
-            <el-collapse-item :title="'退货分析 退货数：' + this.Tksl" name="8">
-              <el-table :data="mdata.thList" style="width: 100%">
+              <!-- <el-table :data="mdata.thList" style="width: 100%">
                 <el-table-column label="退货原因" prop="Thyy" width="25%">
                 </el-table-column>
-                <el-table-column prop="Zrgs" label="责任归属" width="20%">
+                <el-table-column prop="Zrgs" label="责任归属" width="4%">
                 </el-table-column>
                 <el-table-column prop="Cljg" width="30%" label="判定结果">
                 </el-table-column>
-                <el-table-column prop="Sl" width="10%" label="数量">
+                <el-table-column prop="Sl" width="4%" label="数量">
                 </el-table-column>
-                <el-table-column prop="Npdr" width="30%" label="判定人">
+                <el-table-column prop="Npdr" width="5%" label="判定人">
                 </el-table-column>
-              </el-table>
-            </el-collapse-item>
-
-          </el-collapse>
-
-          <!-- <div class="gobacFloatDiv" ref="gobacFloatDiv">
-          <el-button type="primary" @click="scanGoback">返回</el-button>
-        </div> -->
-        </div>
-      </el-main>
-      <el-footer :style="footHeight">
-        <NgvCollecBtn @goback="scanGoback"></NgvCollecBtn>
-      </el-footer>
-    </el-container>
+              </el-table> -->
+            </van-collapse-item>
+          </van-collapse>
+        
+        </div>    
+      <van-tabbar v-model="vanTabbarActive" @change="scanGoback">
+        <van-tabbar-item name="close" icon="certificate">返回</van-tabbar-item>
+      </van-tabbar>      
+    </div>
 
     <div v-for="item in mdata.mlbgList" :key="item.Docid">
       <FlowLog v-if="item.show" @goback="mlbgGoback(item)" v-bind:parIn="item">
@@ -264,31 +288,73 @@
     <div v-for="item in mdata.rkbgList" :key="item.Docid">
       <FlowLog v-if="item.show" @goback="mlbgGoback(item)" v-bind:parIn="item">
       </FlowLog>
-    </div>    
+    </div>
+
+    <van-overlay
+      z-index="21"
+      :show="uploadVisible"       
+    >
+      <div class="wrapper" @click.stop>
+        <div class="block">
+          <UploadVant
+            :visible.sync="uploadVisible"
+            :groupid="mdata.currentGroupid"
+            :tableid="mdata.currentMydjid"
+            :keys.sync="UploadVantKeys"
+            :qx="uploadQx"
+            :deleteQx="true"
+          ></UploadVant>
+        </div>
+      </div>
+    </van-overlay>
   </div>
 </template>
 
 <script>
 import EXIF from "exif-js";
+import UploadVant from "@/components/Utils/UploadVant.vue";
 import { Field as VanField } from "vant";
 import { Col as VanCol } from "vant";
 import { Row as VanRow } from "vant";
+import { Icon as VanIcon } from "vant";
+import { Toast as VanToast } from "vant";
+import { Collapse as VanCollapse } from "vant";
+import { CollapseItem as VanCollapseItem } from "vant";
+import { Overlay as VanOverlay } from "vant";
+import { Tabbar as VanTabbar } from "vant";
+import { TabbarItem as VanTabbarItem } from "vant";
+import { NoticeBar as VanNoticeBar } from "vant";
+import { Image as VanImage } from "vant";
+import { Grid as VanGrid } from "vant";
+import { GridItem as VanGridItem } from "vant";
+import { Button as VanButton } from "vant";
+import { ImagePreview } from 'vant';
+import { Divider as VanDivider } from "vant";
+
 export default {
   name: "Detail",
   components: {
     FlowLog: () => import("@/components/Utils/FlowLog"),
     NgvCollecBtn: () => import("@/components/Utils/NgvCollecBtn"),
+     [ImagePreview.Component.name]: ImagePreview.Component,
     VanField,
     VanRow,
     VanCol,
+    VanIcon,
+    UploadVant,
+    VanOverlay,VanCollapse,VanCollapseItem,VanTabbar,
+    VanTabbarItem,VanNoticeBar,VanImage,VanGrid,VanGridItem,VanButton,VanDivider,VanToast
   },
   props: {
     sphhIn: String,
   },
   data: function () {
     return {
+      vanTabbarActive:"",
       mainHeight: {
         height: "60px",
+        paddingLeft: "0px",
+        paddingRight: "0px",
       },
       footHeight: {
         height: "60px",
@@ -302,6 +368,7 @@ export default {
       userInfo: this.$status.userInfo,
       mdata: {
         sphh: this.sphhIn,
+        zlmxid:0,
         title: [
           // { mc: "xxxxxx", value: "bbbbb" },
           // { mc: "xxxxxx1", value: "bbbbb3" },
@@ -321,10 +388,11 @@ export default {
         mlbgList: [], //面料报告
         rkbgList: [], //成品报告
         thList: [], //退货列表
+        currentMydjid: 0, //当前选择图片是对应哪个mydjid
+        currentGroupid: 0, //当前选择图片是对应哪个mydjid
         lxDataList: {
           //生产过程信息记录
-          groupid: 4320,
-          currentMydjid: 0, //当前选择图片是对应哪个mydjid
+          groupid: 4320,          
           detail: [
             {
               Id: 0,
@@ -344,20 +412,59 @@ export default {
             },
           ],
         },
+        groupname:[],
+        groupids:[
+          {groupname:"产前准备",name:'面料缩率报告',groupid:10001,imgList:[],default:"mlslbg.png"},
+          {groupname:"产前准备",name:'烫衬样',groupid:10002,imgList:[],default:"tcy.png"},
+          {groupname:"产前准备",name:'预缩/松布',groupid:10003,imgList:[],default:"yssb.png"},
+          {groupname:"产前准备",name:'模板使用',groupid:10004,imgList:[],default:"mbsy.png"},
+          {groupname:"产前准备",name:'小工具',groupid:10005,imgList:[],default:"xgj.png"},
+          {groupname:"产前准备",name:'风险评审会',groupid:10006,imgList:[],default:"fxpsh.png"},
+          {groupname:"产前准备",name:'纽扣试打',groupid:10007,imgList:[],default:"nksd.png"},
+          {groupname:"产前准备",name:'其它',groupid:10008,imgList:[],default:"qt.png"},
+          {groupname:"产前样试穿",name:'单人正面',groupid:10011,imgList:[],default:"drzm.png"},
+          {groupname:"产前样试穿",name:'齐码正面',groupid:10012,imgList:[],default:"qmzm.png"},
+          {groupname:"产前样试穿",name:'单人背面',groupid:10013,imgList:[],default:"drbm.png"},
+          {groupname:"产前样试穿",name:'齐码背面',groupid:10014,imgList:[],default:"qmbm.png"},
+          {groupname:"产前样试穿",name:'试穿记录',groupid:10015,imgList:[],default:"scjl.png"},
+          {groupname:"产前样试穿",name:'标签信息',groupid:10016,imgList:[],default:"bqxx.png"},
+          {groupname:"产前样试穿",name:'封样单',groupid:10017,imgList:[],default:"fyd.png"},
+          {groupname:"产前样试穿",name:'其它',groupid:10018,imgList:[],default:"qt.png"},
+          {groupname:"转款上线",name:'成品正面',groupid:10021,imgList:[],default:"cpzm.png"},
+          {groupname:"转款上线",name:'人台正面',groupid:10022,imgList:[],default:"rtzm.png"},
+          {groupname:"转款上线",name:'成品背面',groupid:10023,imgList:[],default:"cpbm.png"},
+          {groupname:"转款上线",name:'人台背面',groupid:10024,imgList:[],default:"rtbm.png"},
+          {groupname:"转款上线",name:'检验记录/数量',groupid:10025,imgList:[],default:"jyjlsl.png"},
+          {groupname:"转款上线",name:'不良部位',groupid:10026,imgList:[],default:"blbw.png"},
+          {groupname:"转款上线",name:'整组生成',groupid:10027,imgList:[],default:"zzsc.png"},
+          {groupname:"转款上线",name:'其它',groupid:10028,imgList:[],default:"qt.png"},        
+          {groupname:"过程质量异常",name:'不良部位',groupid:10031,imgList:[],default:"blbw.png"},        
+        ],
+
       },
       historyList: [
         // {tm:"test"}
       ],
       uploadVisible: false,
-      groupid: -1,
-      uploadQx: false,
-      tableidIn: 0,
+      uploadQx: true,
+      UploadVantKeys: [],
+     
       loading: false,
       activeName: ["1"],
+      imgActiveName: ["1"],
       colVisible: true, //详情页是否隐藏
+     
     };
   },
   methods: {
+    ImageClick(item,index){
+      let images=new Array();
+      item.imgList.forEach(element => {
+        images.push(element.URLAddress);
+      }); 
+      //console.log(images)
+      ImagePreview({images:images,startPosition:index});
+    },
     init() {
       //window.addEventListener("scroll", this.scroll, true);
       this.search();
@@ -381,10 +488,35 @@ export default {
     //     scrollTop +
     //     "px";
     // },
-    choiceImg(mydjid) {
-      //记录是哪个单据点了上传图片
-      this.mdata.lxDataList.currentMydjid = mydjid;
-      this.$refs.filElem.dispatchEvent(new MouseEvent("click"));
+    //点击上传图片
+    choiceImg(mydjid,groupid) {     
+      this.mdata.currentGroupid=groupid;
+      if(mydjid){
+      this.mdata.currentMydjid = mydjid;
+      this.UploadVantKeys.splice(0)
+      //  console.log(this.mdata.lxDataList.detail)
+      // console.log(mydjid)
+      if(groupid==4320){
+        for (var i = 0; i < this.mdata.lxDataList.detail.length; i++) {
+          var sub = this.mdata.lxDataList.detail[i];
+          if (sub.Id == mydjid) {
+            var temp = this.mdata.lxDataList.detail[i].imgList;    
+            for (let item of temp) {          
+              this.UploadVantKeys.push(item.ID)
+            }       
+            break;
+          }
+        }      
+      }else{       
+
+      }
+      this.uploadVisible = true;
+      // console.log(this.UploadVantKeys)
+      //f1记录是哪个单据点了上传图片      
+      //this.$refs.filElem.dispatchEvent(new MouseEvent("click"));
+      }else{
+         this.$message("无法读取开发单信息");
+      }
     },
     getImgList(imgList) {
       //只有一张
@@ -392,38 +524,61 @@ export default {
       for (var i = 0; i < imgList.length; i++) arr.push(imgList[i].URLAddress);
       return arr;
     },
-    scanGoback() {
-      // this.colVisible = false;
-      // window.removeEventListener("scroll", this.scroll,true);
-      this.mdata.sphh = "";
-      this.$emit("goback");
+    scanGoback(index) {
+      if (index == "close") {
+        // this.colVisible = false;
+        // window.removeEventListener("scroll", this.scroll,true);      
+        this.vanTabbarActive="";
+        this.mdata.sphh = "";
+        this.$emit("goback");
+      }
     },
-    searchImg(mydjid) {
+    searchImg(mydjid,groupid) {
       this.$axios
         .get(APIUTL, {
           params: {
             action: "getImgage",
             tableid: mydjid,
-            groupid: this.mdata.lxDataList.groupid,
+            groupid: groupid,
           },
         })
         .then((response) => {
           if (response.data.errcode == 0) {
-            for (var i = 0; i < this.mdata.lxDataList.detail.length; i++) {
-              var sub = this.mdata.lxDataList.detail[i];
-              if (sub.Id == mydjid) {
-                var temp = response.data.data;
-                for (let item of temp) {
-                  item.URLAddress = item.URLAddress.replace(
-                    "../",
-                    "http://webt.lilang.com:9001/"
-                  );
+            if(groupid==4320){
+              for (var i = 0; i < this.mdata.lxDataList.detail.length; i++) {
+                var sub = this.mdata.lxDataList.detail[i];
+                if (sub.Id == mydjid) {
+                  var temp = response.data.data;
+                  for (let item of temp) {
+                    item.URLAddress = item.URLAddress.replace(
+                      "../",
+                      "http://webt.lilang.com:9001/"
+                    );
+                  }
+                  sub.imgList = temp;
+                  this.$set(this.mdata.lxDataList.detail, i, sub); //有响应
+                  // console.log(this.mdata.lxDataList.detail)
+                  break;
                 }
-                sub.imgList = temp;
-                this.$set(this.mdata.lxDataList.detail, i, sub); //有响应
-                // console.log(this.mdata.lxDataList.detail)
-                break;
               }
+              // console.log(this.mdata.lxDataList)
+            }else{
+              for(var i=0;i<this.mdata.groupids.length;i++){
+                var sub=this.mdata.groupids[i]
+                if(sub.groupid==groupid){
+                  var temp = response.data.data;
+                  for (let item of temp) {
+                    item.URLAddress = item.URLAddress.replace(
+                      "../",
+                      "http://webt.lilang.com:9001/"
+                    );
+                  }
+                  sub.imgList=temp;
+                  this.$set(this.mdata.groupids, i, sub); //有响应
+                  break;
+                }
+              }            
+              
             }
           }
         })
@@ -439,6 +594,7 @@ export default {
       if (!saveObj.Cpbz || saveObj.Cpbz.length == 0) {
         this.$alert("请填写跟踪事项再新增", "提示信息", {
           confirmButtonText: "确定",
+          customClass:"dev_MessageBoxCustom"
         });
       } else {
         saveObj.Sphh = this.mdata.sphh;
@@ -458,10 +614,13 @@ export default {
     },
     search() {
       this.goScan(this.mdata.sphh, (checkInfo) => {
+        // console.log(checkInfo)
         if (checkInfo.result == "Successed") {
           this.mdata.sphh = checkInfo.jsonsObject[0]["货号"];
+          this.mdata.zlmxid =Number(checkInfo.jsonsObject[0]["zlmxid"]);
           // this.addLog(this.mdata.sphh); //增加扫描记录
           this.getGYD(checkInfo.jsonsObject[0]["货号"], (scData) => {
+            // console.log(scData);            
             this.mdata.title = [];
             this.mdata.title_cl = [];
             this.mdata.bq = [];
@@ -471,31 +630,34 @@ export default {
             this.mdata.rkbgList = [];
             this.mdata.thList = [];
             this.mdata.lxDataList.detail = [];
-            this.mdata.lxDataList.currentMydjid = 0;
+            this.mdata.currentMydjid = 0;
             this.activeName = ["1"];
             this.createChdmListHtml(checkInfo, scData); //构造材料列表
           });
         } else if (checkInfo.result == "Error") {
-          this.$alert("二维码信息查询错误", "提示信息", {
-            confirmButtonText: "确定",
-            callback: (action) => {
-              this.scan();
-            },
-          });
+           VanToast('二维码信息查询错误');          
+          // this.$alert("二维码信息查询错误", "提示信息", {
+          //   confirmButtonText: "确定",
+          //   callback: (action) => {
+          //     this.scan();
+          //   },
+          // });
         } else if (checkInfo.result == "netErrorW1") {
-          this.$alert("网络错误", "提示信息", {
-            confirmButtonText: "确定",
-            callback: (action) => {
-              this.scan();
-            },
-          });
+           VanToast('网络错误'); 
+          // this.$alert("网络错误", "提示信息", {
+          //   confirmButtonText: "确定",
+          //   callback: (action) => {
+          //     this.scan();
+          //   },
+          // });
         } else if (checkInfo.result == "NoRows") {
-          this.$alert("查无数据,请检查当前用户是否有权限", "提示信息", {
-            confirmButtonText: "确定",
-            callback: (action) => {
-              this.scan();
-            },
-          });
+          VanToast('查无数据,请检查当前用户是否有权限');                  
+          // this.$alert("查无数据,请检查当前用户是否有权限", "提示信息", {
+          //   confirmButtonText: "确定",
+          //   callback: (action) => {
+          //     this.scan();
+          //   },
+          // });
         }
       });
     },
@@ -506,8 +668,23 @@ export default {
         });
         scData.CpzlgzList.forEach((element) => {
           this.mdata.lxDataList.detail.push(element);
-          this.searchImg(element.Id);
+          this.searchImg(element.Id,this.mdata.lxDataList.groupid);
         });
+      }
+      //产中图片
+      if(scData.ImgList && scData.ImgList.length>0){
+        scData.ImgList.forEach(e=>{
+          //e.GroupID
+          this.mdata.groupids.forEach(img=>{
+             if(img.groupid==e.GroupID){
+               e.URLAddress = e.URLAddress.replace(
+                      "../",
+                      "http://webt.lilang.com:9001/"
+                    );
+               img.imgList.push(e)
+             }
+          })
+        })
       }
       var addObj = {};
       addObj.Id = 0;
@@ -532,17 +709,18 @@ export default {
           }
         }
       }
-      //  console.log(scData)
+      // console.log(scData);
       if (scData.Rksl && scData.Rksl > 0) {
         if (scData.RkList && scData.RkList.length > 0) {
           for (var i = 0; i < scData.RkList.length; i++) {
-            scData[i].show=false
-            scData[i].tzid=1;
-            scData[i].ppdm="";
-            scData[i].action = "getFlowLog";
+            scData.RkList[i].show = false;
+            scData.RkList[i].tzid = 1;
+            scData.RkList[i].ppdm = "";
+            scData.RkList[i].action = "getFlowLog";
+            scData.RkList[i].vueExtJSKey = scData.RkList[i].Flowid;
             this.mdata.rkbgList.push(scData.RkList[i]);
           }
-          console.log(this.mdata.rkbgList)
+          // console.log(this.mdata.rkbgList);
         }
       }
       if (scData.JYBGList && scData.JYBGList.length > 0) {
@@ -857,8 +1035,8 @@ export default {
           }
         }
       }
-      var khtitl = "";
-      if (材料与供货商信息 != "") {
+      var khtitl = "";      
+      if (材料与供货商信息 && 材料与供货商信息 != "") {
         for (var i = 0; i < 材料与供货商信息.length; i++) {
           this.mdata.title_cl.push({
             ghs: 材料与供货商信息[i].khmc,
@@ -897,10 +1075,10 @@ export default {
           params: {
             serviceGotoUrl:
               NetUrl +
-              (NetUrl.indexOf("192.168.35.231") >= 0 ? "oa" : "qywx") +
+              (NetUrl.indexOf("192.168.35.231") >= 0 ? "qywx" : "oa") +
               "/project/erpscan/yf_cl_sphh_xsb.aspx",
             serviceGoto: ".net",
-            encoding: "gb2312",
+             //encoding: "gb2312",
             sphh: result,
             from: "hgz",
           },
@@ -942,12 +1120,13 @@ export default {
           APIUTL +
             "?serviceGotoUrl=" +
             NetUrl +
-            (NetUrl.indexOf("192.168.35.231") >= 0 ? "oa" : "qywx") +
+            (NetUrl.indexOf("192.168.35.231") >= 0 ? "qywx" : "oa") +
             "/project/erpscan/sphhinfo.ashx" +
-            "&serviceGoto=.net&encoding=gb2312",
+            "&serviceGoto=.net&encoding=utf-8",
           param
         )
         .then((response) => {
+          // console.log(response);
           this.loading = false;
           func(response.data);
         })
@@ -961,64 +1140,64 @@ export default {
     },
 
     uploadImg(e) {
-      if (e.target.files.length > 0) {
-        // this.$vux.loading.show("Loading...");
-        let files = e.target.files || e.dataTransfer.files;
-        if (!files.length) return;
-        this.picValue = files[0];
-        this.uploadName = files[0].name;
+      // if (e.target.files.length > 0) {
+      //   // this.$vux.loading.show("Loading...");
+      //   let files = e.target.files || e.dataTransfer.files;
+      //   if (!files.length) return;
+      //   this.picValue = files[0];
+      //   this.uploadName = files[0].name;
 
-        // 上传图片
-        var u = navigator.userAgent,
-          app = navigator.appVersion;
-        var isAndroid = u.indexOf("Android") > -1 || u.indexOf("Linux") > -1; //g
-        var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
-        if (isAndroid) {
-          this.axiosFun(this.picValue);
-        }
-        if (isIOS) {
-          this.imgPreview(this.picValue);
-        }
+      //   // 上传图片
+      //   var u = navigator.userAgent,
+      //     app = navigator.appVersion;
+      //   var isAndroid = u.indexOf("Android") > -1 || u.indexOf("Linux") > -1; //g
+      //   var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+      //   if (isAndroid) {
+      //     this.axiosFun(this.picValue);
+      //   }
+      //   if (isIOS) {
+      //     this.imgPreview(this.picValue);
+      //   }
 
-        // 上传视频
-        // this.axiosFun(this.picValue);
-      }
+      //   // 上传视频
+      //   // this.axiosFun(this.picValue);
+      // }
     },
     imgPreview(file) {
-      let self = this;
-      let Orientation;
-      //去获取拍照时的信息，解决拍出来的照片旋转问题
-      EXIF.getData(file, function () {
-        Orientation = EXIF.getTag(this, "Orientation");
-      });
-      // 看支持不支持FileReader
-      if (!file || !window.FileReader) return;
+      // let self = this;
+      // let Orientation;
+      // //去获取拍照时的信息，解决拍出来的照片旋转问题
+      // EXIF.getData(file, function () {
+      //   Orientation = EXIF.getTag(this, "Orientation");
+      // });
+      // // 看支持不支持FileReader
+      // if (!file || !window.FileReader) return;
 
-      if (/^image/.test(file.type)) {
-        // 创建一个reader
-        let reader = new FileReader();
+      // if (/^image/.test(file.type)) {
+      //   // 创建一个reader
+      //   let reader = new FileReader();
 
-        // 将图片2将转成 base64 格式
-        reader.readAsDataURL(file);
+      //   // 将图片2将转成 base64 格式
+      //   reader.readAsDataURL(file);
 
-        // 读取成功后的回调
-        reader.onloadend = function () {
-          let result = this.result;
-          let img = new Image();
-          img.src = result;
-          //判断图片是否大于100K,是就直接上传，反之压缩图片
-          if (this.result.length <= 100 * 1024) {
-            self.headerImage = this.result;
-            self.postImg();
-          } else {
-            img.onload = () => {
-              let data = self.compress(img, Orientation);
-              self.headerImage = data;
-              self.postImg();
-            };
-          }
-        };
-      }
+      //   // 读取成功后的回调
+      //   reader.onloadend = function () {
+      //     let result = this.result;
+      //     let img = new Image();
+      //     img.src = result;
+      //     //判断图片是否大于100K,是就直接上传，反之压缩图片
+      //     if (this.result.length <= 100 * 1024) {
+      //       self.headerImage = this.result;
+      //       self.postImg();
+      //     } else {
+      //       img.onload = () => {
+      //         let data = self.compress(img, Orientation);
+      //         self.headerImage = data;
+      //         self.postImg();
+      //       };
+      //     }
+      //   };
+      // }
     },
     compress(img, Orientation) {
       let _this = this;
@@ -1147,16 +1326,16 @@ export default {
       }
     },
     postImg() {
-      //这里写接口
-      // console.log(this.headerImage)
-      const block = this.headerImage.split(";");
+      // //这里写接口
+      // // console.log(this.headerImage)
+      // const block = this.headerImage.split(";");
 
-      const contentType = block[0].split(":")[1]; // In this case "image/jpeg"
+      // const contentType = block[0].split(":")[1]; // In this case "image/jpeg"
 
-      const realData = block[1].split(",")[1]; // In this case "R0lGODlhPQBEAPeoAJosM...."
+      // const realData = block[1].split(",")[1]; // In this case "R0lGODlhPQBEAPeoAJosM...."
 
-      var blob = this.b64toBlob(realData, contentType);
-      this.axiosFun(blob);
+      // var blob = this.b64toBlob(realData, contentType);
+      // this.axiosFun(blob);
     },
     uploadDefined(file, callback) {
       let _this = this;
@@ -1179,7 +1358,7 @@ export default {
               "service/HttpRequestSkill.ashx?groupid=" +
               this.mdata.lxDataList.groupid +
               "&tableid=" +
-              this.mdata.lxDataList.currentMydjid
+              this.mdata.currentMydjid
           )
       );
       xhr.send(request);
@@ -1198,16 +1377,16 @@ export default {
       };
     },
     async axiosFun(blob) {
-      let that = this;
-      that.uploadDefined(blob, function (d) {
-        if (d.errcode == 0) {
-          that.$message(that.uploadName + "上传成功"); // 上传成功逻辑
-          that.searchImg(that.mdata.lxDataList.currentMydjid);
-        } else {
-          that.$message(that.uploadName + "上传失败"); // 上传成功逻辑
-          console.log(d);
-        }
-      });
+      // let that = this;
+      // that.uploadDefined(blob, function (d) {
+      //   if (d.errcode == 0) {
+      //     that.$message(that.uploadName + "上传成功"); // 上传成功逻辑
+      //     that.searchImg(that.mdata.currentMydjid);
+      //   } else {
+      //     that.$message(that.uploadName + "上传失败"); // 上传成功逻辑
+      //     console.log(d);
+      //   }
+      // });
     },
     randomString(len) {
       len = len || 32;
@@ -1256,9 +1435,53 @@ export default {
       item.show = false;
       this.colVisible = true;
     },
+    //分组
+    groupImg(){//{groupname:"产前准备",name:'面料缩率报告',groupid:10001,imgList:[],default:"mlslbg.png"},
+
+      this.mdata.groupids.forEach((e) => {
+        let isexists=false;
+        for(let i=0;i<this.mdata.groupname.length;i++){
+          if(e.groupname==this.mdata.groupname[i].groupname){
+            isexists=true;
+          }
+        }
+        if(!isexists){
+          this.mdata.groupname.push({groupname:e.groupname,name:e.name,key:this.mdata.groupname.length+1})
+        }        
+      });
+      // console.log(this.mdata.groupname)
+    },
+    filterImg(groupname){
+      let list = [];
+      this.mdata.groupids.forEach((e) => {        
+        if(e.groupname==groupname){
+          list.push(e)
+        }
+      });
+      return list;
+    },
+  },
+  filters:{
+
   },
   mounted() {},
-  watch: {},
+  watch: {
+    UploadVantKeys(newValue, oldvalue) {      
+      // console.log(newValue,oldvalue)
+      //上传图片有更改,刷新,  
+      if(newValue.length!=oldvalue.length){    
+      this.searchImg(this.mdata.currentMydjid,this.mdata.currentGroupid);
+      }else{
+        for(var i=0;i<newValue.length;i++){        
+          if(newValue[i]!=oldvalue[i]){
+            this.searchImg(this.mdata.currentMydjid,this.mdata.currentGroupid);
+            break;
+          }
+        }
+      }      
+      // console.warn("UploadVantKeys", newValue, oldvalue);    
+    },
+  },
   computed: {
     Rksl: function () {
       var temp = 0;
@@ -1276,6 +1499,7 @@ export default {
     },
   },
   created() {
+    this.groupImg();
     this.init();
     // 页面创建时执行一次getHeight进行赋值，顺道绑定resize事件
     window.addEventListener("resize", this.getHeight);
@@ -1285,6 +1509,13 @@ export default {
 </script>
 
 <style scoped>
+ 
+
+.block {
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+}
 .gobacFloatDiv {
   width: 80px;
   height: 60px;
@@ -1329,5 +1560,22 @@ export default {
   -webkit-column-gap: 10px;
   -moz-column-gap: 10px;
   column-gap: 10px;
+}
+ .wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  .wrapDetail {
+  padding-bottom:50px;
+}
+.thListColr{
+  background-color: #ecf8ff;
+}
+</style>
+<style>
+.dev_MessageBoxCustom {
+  width: 300px;
 }
 </style>

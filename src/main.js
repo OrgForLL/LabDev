@@ -13,7 +13,8 @@ import axios from "axios"
 // 导入babel-polyfill兼容IE
 import 'babel-polyfill'
 
-// let vConsole = new VConsole() // 初始化
+ //let vConsole = new VConsole() // 初始化
+ //Vue.use(vConsole)
 // 使用ElementUI
 Vue.use(ElementUI)
 Vue.prototype.$status = status; // 挂载到 Vue 实例上

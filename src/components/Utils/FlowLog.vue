@@ -212,7 +212,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .gobacFloatDiv {
   width: 80px;
   height: 60px;

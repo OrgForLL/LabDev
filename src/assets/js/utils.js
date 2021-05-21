@@ -2,10 +2,10 @@ export function getUrlKey(name, url) {
     return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(url) || [, ""])[1].replace(/\+/g, '%20')) || null
 }
 export function loadJS(vue, callBack) {
-    // console.log(process)
+    
    
     if (vue.$data.mdata.vueExtJSKey) {
-  
+        console.log(vue.$data.mdata.vueExtJSKey)
         //加载到页面上JS的id
         var vueKey = "vueKey";
         if (process.env.type == '231') 
