@@ -311,7 +311,7 @@
 </template>
 
 <script>
-import EXIF from "exif-js";
+// import EXIF from "exif-js";
 import UploadVant from "@/components/Utils/UploadVant.vue";
 import { Field as VanField } from "vant";
 import { Col as VanCol } from "vant";
@@ -801,7 +801,7 @@ export default {
           }
         }
         this.mdata.title.push({ mc: "加工厂", value: khmc });
-
+console.log(水洗名称)
         if (水洗名称 == "水洗牛仔裤" || 水洗名称 == "水洗牛仔裤v2") {
           this.mdata.bq.push({ mc: "号型", value: 号型 });
           this.mdata.bq.push({ mc: "版型", value: 版型 });
@@ -825,7 +825,7 @@ export default {
             mc: "警告语",
             value: 警告语.replace("警告语", ""),
           });
-        } else if (水洗名称 == "休闲裤" || 水洗名称 == "休闲裤v2") {
+        } else if (水洗名称 == "休闲裤" || 水洗名称 == "休闲裤v2" || 水洗名称 == "水洗牛仔裤v2&轻商务" || 水洗名称=="休闲裤v2&轻商务") {
           this.mdata.bq.push({ mc: "号型", value: 号型 });
           this.mdata.bq.push({ mc: "版型", value: 版型 });
           this.mdata.bq.push({ mc: "纤维含量", value: "" });
@@ -844,7 +844,7 @@ export default {
               }
             }
           }
-        } else if (水洗名称 == "男西裤" || 水洗名称 == "男西裤v2") {
+        } else if (水洗名称 == "男西裤" || 水洗名称 == "男西裤v2" || 水洗名称 == "男西裤v2&轻商务") {
           this.mdata.bq.push({ mc: "号型", value: 号型 });
           this.mdata.bq.push({ mc: "纤维含量", value: "" });
           this.getCFHtml(纤维含量, this.mdata.bq);
@@ -865,8 +865,9 @@ export default {
         } else if (
           水洗名称 == "休闲衬衫" ||
           水洗名称 == "休闲衬衫v2" ||
-          水洗名称 == "正衬V2" ||
-          水洗名称 == "休闲衬衫v3"
+          水洗名称 == "正衬V2" || 水洗名称 == "正衬V2&轻商务" ||
+          水洗名称 == "休闲衬衫v3"||
+          水洗名称 == "休闲衬衫v3&轻商务" || 水洗名称 == "休闲衬衫v2&轻商务"
         ) {
           this.mdata.bq.push({ mc: "纤维含量", value: "" });
           this.getCFHtml(纤维含量, this.mdata.bq);
@@ -906,7 +907,8 @@ export default {
           this.mdata.bq.push({ mc: "批号", value: "" });
         } else if (
           水洗名称 == "休闲服时尚羽绒服" ||
-          水洗名称 == "休闲服时尚羽绒服v2"
+          水洗名称 == "休闲服时尚羽绒服v2" ||
+          水洗名称 == "休闲服时尚羽绒服v2&轻商务" 
         ) {
           this.mdata.bq.push({ mc: "纤维含量", value: "" });
           this.getCFHtml(纤维含量, this.mdata.bq);
@@ -977,7 +979,7 @@ export default {
               }
             }
           }
-        } else if (水洗名称 == "茄克衫" || 水洗名称 == "茄克衫v2") {
+        } else if (水洗名称 == "茄克衫" || 水洗名称 == "茄克衫v2" || 水洗名称 == "茄克衫v2&轻商务") {
           this.mdata.bq.push({ mc: "纤维含量", value: "" });
           this.getCFHtml(纤维含量, this.mdata.bq);
           this.mdata.bq.push({ mc: "洗涤方法", value: 洗涤方法 });
@@ -995,7 +997,7 @@ export default {
               }
             }
           }
-        } else if (水洗名称 == "西服套装" || 水洗名称 == "西服套装v2") {
+        } else if (水洗名称 == "西服套装" || 水洗名称 == "西服套装v2" || 水洗名称 == "西服套装v2&轻商务") {
           this.mdata.bq.push({ mc: "号型", value: 号型 });
           this.mdata.bq.push({ mc: "纤维含量", value: "" });
           this.getCFHtml(纤维含量, this.mdata.bq);
@@ -1014,7 +1016,7 @@ export default {
               }
             }
           }
-        } else if (水洗名称 == "内衣内裤热转移印标") {
+        } else if (水洗名称 == "内衣内裤热转移印标" || 水洗名称 == "内衣内裤热转移印标&轻商务") {
           this.mdata.bq.push({ mc: "号型", value: 号型 });
           this.mdata.bq.push({ mc: "规格", value: 规格 });
           this.mdata.bq.push({ mc: "纤维含量", value: "" });
