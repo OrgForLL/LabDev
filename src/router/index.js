@@ -13,6 +13,7 @@ let MaterialApplyMain = () => import('@/components/MaterialApply/Main')
 let MassProductionQualityMain = () => import('@/components/MassProductionQuality/Main')
 let FactoryWashMain = () => import('@/components/FactoryWash/Main')
 let MaterielCodeMain = () => import('@/components/MaterielCode/Main')
+let SampleCardMain = () => import('@/components/SampleCard/Main')
 let UploadVant = () => import('@/components/Utils/UploadVant')
 // import MassProductionQualityMain from '@/components/MassProductionQuality/Main'
 Vue.use(Router)
@@ -20,21 +21,29 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/MassProductionQuality',
+      path: '/MassProductionQuality',//面料大货质量跟进,高 ,没用
       default: 'MassProductionQualityMain',
       component: MassProductionQualityMain,
     } ,
     {
-      path: '/ProcessControl',
+      path: '/ProcessControl',//产品质量记录信息叶总
       default: 'ProcessControlMain',
       component: ProcessControlMain,
       meta:{
         requireAuth:true 
       }
     } ,
+    {
+      path: '/SampleCard',//研发面料样卡接收
+      default: 'SampleCardMain',
+      component: SampleCardMain,
+      meta:{
+        requireAuth:true 
+      }
+    } ,    
 
     {
-      path: '/MaterielCode',
+      path: '/MaterielCode',//材料编码财务
       default: 'MaterielCodeMain',
       component: MaterielCodeMain,
       meta:{
@@ -52,7 +61,7 @@ export default new Router({
       }
     } ,    
     {
-      path: '/FactoryWash',
+      path: '/FactoryWash',//成衣水洗叶总
       default: 'FactoryWashMain',
       component: FactoryWashMain,
       meta:{

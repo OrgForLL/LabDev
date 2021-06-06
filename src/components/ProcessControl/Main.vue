@@ -7,17 +7,17 @@
       <div class="wrap" v-show="scanVisible">
         <h2 style="text-align: center">产品质量记录信息</h2>
         <van-cell-group>
-          <van-field   v-model="mdata.sphh" label="货号" />
+          <van-field  size="large"  v-model="mdata.sphh" label="货号" />
         </van-cell-group>
         <van-button
           block
-          size="small"
+          size="large"
           @click="search"
           type="primary"
           style="margin-top: 10px; margin-bottom: 10px"
           >查询</van-button
         >
-        <van-button block size="small" @click="scan" type="primary"
+        <van-button block size="large" @click="scan" type="primary"
           >扫描</van-button
         >
         <van-divider
