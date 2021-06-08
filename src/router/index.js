@@ -14,6 +14,8 @@ let MassProductionQualityMain = () => import('@/components/MassProductionQuality
 let FactoryWashMain = () => import('@/components/FactoryWash/Main')
 let MaterielCodeMain = () => import('@/components/MaterielCode/Main')
 let SampleCardMain = () => import('@/components/SampleCard/Main')
+let FactoryWashLabMain = () => import('@/components/FactoryWashLab/Main')
+let AccessoriesMain = () => import('@/components/Accessories/Main')
 let UploadVant = () => import('@/components/Utils/UploadVant')
 // import MassProductionQualityMain from '@/components/MassProductionQuality/Main'
 Vue.use(Router)
@@ -33,6 +35,22 @@ export default new Router({
         requireAuth:true 
       }
     } ,
+    {
+      path: '/FactoryWashLab',//成衣水洗实验室上传图片
+      default: 'FactoryWashLabMain',
+      component: FactoryWashLabMain,
+      meta:{
+        requireAuth:true 
+      }
+    } ,    
+    {
+      path: '/Accessories',//产品质量记录信息叶总
+      default: 'AccessoriesMain',
+      component: AccessoriesMain,
+      meta:{
+        requireAuth:true 
+      }
+    } ,    
     {
       path: '/SampleCard',//研发面料样卡接收
       default: 'SampleCardMain',

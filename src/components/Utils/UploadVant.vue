@@ -75,7 +75,7 @@ export default {
           this.$axios
           .get(APIUTL, {
             params: {
-              serviceName: "svr-cooperativeofficetest",
+              serviceName: "svr-cooperativeoffice",
               action: "SealedSamples/delePic",              
               djid: file.ID,
             },
