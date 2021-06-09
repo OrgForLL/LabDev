@@ -145,7 +145,7 @@ export default {
                             "service/HttpRequestSkill.ashx?groupid=" +
                             this.groupid +
                             "&tableid=" +
-                            this.tableid
+                            this.tableid+"&createname="+this.$status.userInfo.cname
                         ),
                       // APIUTLFile +
                       //   "?serviceGotoUrl=tm.lilang&groupid="+this.groupid+"&tableid="+this.tableid+"&WXOpenID=oploGjw7dgERs2FLFvG2qvjwzt90",
