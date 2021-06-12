@@ -93,7 +93,18 @@
                 />
               </van-cell-group>
             </van-collapse-item>
-            <van-collapse-item title="实验室检测" name="9"> </van-collapse-item>
+            <van-collapse-item title="实验室检测" name="9"> 
+           <van-cell-group>
+                <van-cell
+                  v-for="item in filterNz(mdata.mlbgList)"
+                  :key="item.Syid"
+                  :title="item.NzBgbh"
+                  @click="openWebView(item.Syid)"
+                  is-link
+                />
+              </van-cell-group>
+
+            </van-collapse-item>
             <van-collapse-item title="产前封样" name="10"> </van-collapse-item>
             <van-collapse-item title="生产过程信息记录" name="6">
               <!-- <input
@@ -281,6 +292,11 @@
       </van-tabbar>      
     </div>
 
+    <div>
+      <Iframe v-if="repData.visible" @goback="colVisible=true;repData.visible=false;" v-bind:parIn="repData">
+      </Iframe>
+    </div>
+
     <div v-for="item in mdata.mlbgList" :key="item.Docid">
       <FlowLog v-if="item.show" @goback="mlbgGoback(item)" v-bind:parIn="item">
       </FlowLog>
@@ -335,6 +351,7 @@ export default {
   name: "Detail",
   components: {
     FlowLog: () => import("@/components/Utils/FlowLog"),
+    Iframe: () => import("@/components/Utils/Iframe"),
     NgvCollecBtn: () => import("@/components/Utils/NgvCollecBtn"),
      [ImagePreview.Component.name]: ImagePreview.Component,
     VanField,
@@ -453,6 +470,10 @@ export default {
       activeName: ["1"],
       imgActiveName: ["1"],
       colVisible: true, //详情页是否隐藏
+      repData:{
+        visible:false,     
+        detailUrl:'',//实验室报告的URL
+      },
      
     };
   },
@@ -1462,9 +1483,21 @@ console.log(水洗名称)
       });
       return list;
     },
+    openWebView(syid){
+      this.colVisible=false
+      this.repData.visible=true;
+      this.repData.detailUrl="http://webt.lilang.com:9001/tl_yf/pkjc_new_p_new.aspx?id="+syid+"&isbhgbg="
+    },
+    filterNz(s){  
+      let list=[]    
+        s.forEach(e=>{
+          if(e.NzBgbh.length>0) list.push(e)
+        })
+        return list; 
+    },      
   },
   filters:{
-
+  
   },
   mounted() {},
   watch: {
@@ -1509,9 +1542,8 @@ console.log(水洗名称)
   },
 };
 </script>
-
-<style scoped>
  
+<style scoped>
 
 .block {
   width: 100%;
@@ -1574,7 +1606,8 @@ console.log(水洗名称)
 }
 .thListColr{
   background-color: #ecf8ff;
-}
+} 
+
 </style>
 <style>
 .dev_MessageBoxCustom {
