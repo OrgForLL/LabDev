@@ -30,9 +30,9 @@
         <FieldPickerSingle
           title="设计风格"
           :inValue.sync="mdata.xldm"
-          
+          :dataSource="mdata.xlidData"
           type="getDesignStyleList"
-          @goback="pickerSingleBack"
+          
         /> 
 
         <FieldPickerSingle
@@ -40,6 +40,7 @@
           :inValue.sync="mdata.xmjlid"
           type="getMaterialApplyXmjl"
           @goback="pickerSingleBack"
+          @initback="pickerSingleInitBack"
         />
         <FieldPickerSingle
           title="品类"
@@ -110,6 +111,7 @@
 </template>
 
 <script>
+import * as api from '@/util/apis.js';
 import myStore from "@/components/Utils/Store";
 import { Button as VanButton } from "vant";
 import { Tabbar as VanTabbar } from "vant";
@@ -145,28 +147,25 @@ export default {
       mdata: {
         kfbh: "", //g开发编号
         kfbhid: 0, //开发编号
- 
-        djlb: "", //采购类别
-        djlbid: 0, //采购类别
       
-        xmjl: "", //项目经理
-        xmjlid: 0, //项目经理
+        djlbid: 7748, //采购类别
+      
+        xmjl: myStore.userInfo.cname, //项目经理
+        xmjlid: myStore.userInfo.userid, //项目经理
         fgid: 0, //项目经理对应的风格
         zbwgbs:0,//主表上的品类,如果有选主表品类,明细可不选
-        bm: "", //申请部门
-        bmid: 0, //申请部门
-    
-        xl: "", //成衣设计风格
-        xldm: "", //成衣设计风格
-        xlid: 0, //成衣设计风格
 
+        bmid: 8563, //申请部门
+    
+        // xl: "", //成衣设计风格
+        xldm: "", //成衣设计风格,用来展示,数据源是dm,mc      
+        xlidData:[],
         detail: [
           // {
           //     chdm:"tst1",
           //     chmc:"asdfasdfasdf",
           //     sl:12,
           //     lymxid:0,kfbhdm:'', id:0,
-
           //     wgbsid:6382,//品类
           //     iswh:true,//样卡
           //     showWgbs:false,
@@ -176,8 +175,7 @@ export default {
           //     khid:0,//供应商
           //     khmc:"",//供应商
           //     zks:"",//标签数量
-          // },
-        
+          // },        
          
         ],
       },
@@ -187,23 +185,69 @@ export default {
     };
   },
   methods: {
-    init() {
-      llApp.init();
+    init() {      
+      llApp.init();this.xldmInit(); 
+    },
+    //这个组件加载的时候就会调用,可以说不受控
+    pickerSingleInitBack(type,options){      
+      if(type=="getMaterialApplyXmjl"){        
+        //默认了项目经理,那他对应的风格要找出来,保存的时候使用
+        options.forEach(el => {
+          if(el.dm==this.mdata.xmjlid){
+            this.mdata.fgid=el.fgid
+            //如果是产品的设计师,设计风格默认成主产品,如果是国际部默认国际,其它不默认
+            if(el.fgid==6912) this.mdata.bmid=8563;
+            else if (el.fgid==8605) this.mdata.bmid=8639;          
+            this.xldmInit(el.fgid);           
+          }
+        });        
+      }
+    },
+    //设计风格,这个函数还带有赋值功能
+    xldmInit(defVal){
+      if(this.mdata.xlidData.length>0){         
+        if(defVal){
+          this.mdata.xlidData.forEach((el)=>{         
+            if(Number(el.id)==Number(defVal)) this.mdata.xldm=el.dm
+          })       
+        }
+        return
+      }
+      api.fieldPickerSingle("getDesignStyleList",null,(response)=>{  
+        if (response.errcode != 0) {
+          this.$message({
+            showClose: true,
+            message: response.errmsg,
+            type: "error",
+          }); 
+          this.loading = false;
+          return;
+        }
+        this.mdata.xlidData=response.data;           
+        if(defVal){
+          this.mdata.xlidData.forEach((el)=>{
+            if(Number(el.id)==Number(defVal)) this.mdata.xldm=el.dm
+          })
+        }            
+      })             
     },
     pickerSingleBack(type, mark, obj) {
       if (type == "getMaterialApplyXmjl") {
         //项目经理
         this.mdata.fgid = obj.fgid;
         this.mdata.xmjl=obj.mc;
-      } else if (type == "getDesignStyleList") {
-        this.mdata.xlid = obj.id;
-        // console.log(this.mdata.xlid);
-      }
+      } 
+      // else if (type == "getDesignStyleList") {
+      //   this.mdata.xlid = obj.id;
+      //   // console.log(this.mdata.xlid);
+      // }
     },
     handleSelect(index) {
-      if (index == "add") {
-        if (process.env.type == "231") this.search("M23/MS-P1621D-2#",'xydj');
+      if (index == "add") {        
+        if (process.env.type == "231" || window.location.href.startsWith("http://localhost") ) this.search("M23/MS-P1621D-2#",'xydj');
         else this.scan();
+// this.search("M23/MS-P1621D-2#",'xydj');
+
       } else if (index == "save") {
         this.save();
       } else if (index == "clear") {
@@ -263,12 +307,12 @@ export default {
           addItem.id = data.id;
           addItem.zks = 0; //先默认,后端空串的时候会报错
           addItem.kfbhdm = data.kfbhdm;
-          addItem.iswh=false;
+          addItem.iswh=true;
           addItem.htidid=1
     
           this.mdata.detail.unshift(addItem);
           this.loading = false;
-console.log(this.mdata.detail)
+// console.log(this.mdata.detail)
           this.active = ""; //不让下面的菜单选中,默认会选中再点的时候不会触发事件
         })
         .catch((error) => {        
@@ -326,9 +370,13 @@ console.log(this.mdata.detail)
       let zbObj = {};
       let mxObj = [];
       zbObj.kfbhid = this.mdata.kfbhid;
-      zbObj.xlid = this.mdata.xlid;
+      let xlid;
+      this.mdata.xlidData.forEach((el)=>{
+        if(el.dm==this.mdata.xldm) xlid=el.id;
+      })
+      zbObj.xlid = xlid;
       zbObj.cname = myStore.userInfo.cname;
-      zbObj.xmjl = this.mdata.xmjl;
+      
       zbObj.bmid = this.mdata.bmid;
       zbObj.djlbid = this.mdata.djlbid;
       if (this.mdata.djlbid == 0) {
@@ -347,27 +395,28 @@ console.log(this.mdata.detail)
         this.active = ""; //不让下面的菜单选中,默认会选中再点的时候不会触发事件
         return;
       }
-      let xmjl = "";
+      let xmjl = this.mdata.xmjl;
       if (this.mdata.bmid == 8563 || this.mdata.bmid == 8639) {
-        if (this.mdata.xmjl.length == 0) {
+        if (xmjl.length == 0) {
           this.errMsg("请先填写项目经理");
           this.active = ""; //不让下面的菜单选中,默认会选中再点的时候不会触发事件
           return;
         }
       } else {
-        xmjl = this.mdata.xmjl || myStore.userInfo.cname;
+        xmjl = xmjl || myStore.userInfo.cname;
       }
+      zbObj.xmjl = xmjl;
       // console.log(myStore.userInfo);
       if (
-        this.mdata.xlid != 16902 &&
-        this.mdata.xlid != 16679 &&
-        this.mdata.xlid != 8985 &&
-        this.mdata.xlid != 8984
+        zbObj.xlid != 16902 &&
+        zbObj.xlid != 16679 &&
+        zbObj.xlid != 8985 &&
+        zbObj.xlid != 8984
       ) {
         //概念款 也放开
         if (
           (this.mdata.bmid == 8563 || this.mdata.bmid == 8639) &&
-          this.mdata.fgid != this.mdata.xlid
+          this.mdata.fgid != zbObj.xlid
         ) {
           // 如果是商品中心调样,或国际部调样需要控制 16902线上快返大家都能选16679鞋事业部，大家都选,定制也放开
           this.errMsg("成衣设计风格选择有误");
@@ -447,6 +496,7 @@ console.log(this.mdata.detail)
                 if (r.errcode == 0) {
                   this.$message("保存成功");
                   this.clear();
+                  this.goflow(r.data[0][0].id)                  
                 } else {
                   this.errMsg(r.errmsg);
                 }
@@ -516,6 +566,31 @@ console.log(this.mdata.detail)
         message: msg,
         type: "error",
       });
+    },
+    goflow(id){
+      api.goflow(id,'cl_t_dddjb-620',(msg)=>{
+        if(msg.errcode==0){
+          if (msg.data.isneed == 1) {
+              let baseUrl = 'http://sj.lilang.com:186/llsj/docDetailDataFF.aspx?';
+              for (let key in msg.data) {
+                  if (key == "tzid" || key == "docid" || key == "dxid" || key == "flowid" || key == "dbname" || key == "cname" || key == "userid") {
+                      if (baseUrl.indexOf('?') === -1) {
+                          baseUrl += "?" + key + "=" + msg.data[key] + "";
+                      } else {
+                          baseUrl += "&" + key + "=" + msg.data[key] + "";
+                      }
+                  }
+              }
+              
+              baseUrl += "&gourl=" + encodeURIComponent("http://tm.lilanz.com/oa/project/LabDev/index.html#/MaterialApply?apptoken=" + myStore.userInfo.apptoken)
+              window.location.href = baseUrl;
+          } else {
+              //不需要办理，流程已经办理过了，
+          }
+        }else{
+          console.log(msg.errMsg)
+        }
+      })      
     },
   },
   mounted() {},

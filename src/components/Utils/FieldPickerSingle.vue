@@ -24,6 +24,7 @@
         :inExtObj="inExtObj"
         :dataSource="dataSource || options"
         @goback="pickerSingleBack"
+        @initback="pickerSingleInitBack"
         :mark="mark"
       />
     </van-popup>
@@ -34,6 +35,7 @@
 import { Picker as VanPicker } from "vant";
 import { Field as VanField } from "vant";
 import { Popup as VanPopup } from "vant";
+import * as api from '@/util/apis.js';
 export default {
   name: "FieldPickerSingle",
   components: {
@@ -56,7 +58,7 @@ export default {
     dataSource: Array, //数据源
   },
   computed: {
-    dm2mc() {
+    dm2mc() {//取默认名称
       if (this.dataSource) {//名称优先外部数据源查出来
         let arr = this.dataSource.filter((item) => {
           return item.dm == this.inValue;
@@ -88,94 +90,35 @@ export default {
       this.$emit("update:inValue", obj.dm); //更新值     
       this.$emit("goback", type, mark, obj); //回调父函数
     },
+      //初始化后回调,在有默认值的情况下,且外部需要数据源的其它这了段调用
+    pickerSingleInitBack(type,options){
+      this.$emit("initback", type, options); //回调父函数
+    },
   },
   created: function () {
     //只加载一次
-    if (!this.dataSource) {
-      var params = {};
-      params.action = this.type;
-      if (this.inExtObj) {
-        for (var i in this.inExtObj) {
-          params[i] = this.inExtObj[i];
-        }
-      }
-
-      if (params.action == "") {
-        console.log("type is empty");
-        return false;
-      }
+    if (!this.dataSource) {    
       this.loading = true;
-      this.$axios
-        .get(APIUTL, {
-          params: params,
-        })
-        .then((response) => {
-          if (response.data.errcode != 0) {
-            this.$message({
-              showClose: true,
-              message: response.data.errmsg,
-              type: "error",
-            });
-            return;
-          }
-          var data = [];
-          if (
-            this.type == "getDesignStyleList" ||
-            this.type == "getMaterialApplyTypes" ||
-            this.type == "getMaterialApplyDjlb" ||
-            this.type == "getMaterialApplyBm"
-          )
-            data = response.data.data[0];
-          else if (this.type == "getDevNumList") data = response.data.data;
-          else if (this.type == "getMaterialApplyXmjl") {
-            //项目经理
-            for (var i = 0; i < response.data.data[0].length; i++) {
-              data.push({
-                dm: response.data.data[0][i].ryid,
-                mc: response.data.data[0][i].xm,
-                fgid: response.data.data[0][i].fgid,
-              });
-            }
-          } else if (this.type == "getClothTypes") {
-            for (var i = 0; i < response.data.data.length; i++) {
-              if (response.data.data[i].value == 1201) {
-                //利郎运动系列 不要
-              } else {
-                for (var j = 0; j < response.data.data[i].children.length; j++) {
-                  //jb2
-                  var jb3 = response.data.data[i].children[j].children;
-                  for (var z = 0; z < jb3.length; z++) {
-                    //加空格转成字符串
-                    data.push({ dm: jb3[z].value, mc: jb3[z].label });
-                  }
-                }
-              }
-            }
-          }
-
-          //数据默认格式dm ,mc
-          for (var i = 0; i < data.length; i++) {        
-            this.options.push(data[i]);          
-          }
-        
+      api.fieldPickerSingle(this.type,this.inExtObj,(response)=>{
+  
+        if (response.errcode != 0) {
+          this.$message({
+            showClose: true,
+            message: response.errmsg,
+            type: "error",
+          }); 
           this.loading = false;
-        })
-        .catch((error) => {
-          console.log(error);
-          this.loading = false;
-        });    
+          return;
+        }
+        this.options=response.data;
+        this.pickerSingleInitBack(this.type,this.options)        
+        this.loading = false;
+      })
+      
     }
   },
   watch: {
-    // inValue(v1, v2) {
-    //   console.log(v1, v2, this.text, this.inValue);
-    // },
-    // value(newValue) {
-    //   this.$emit("update:inValue", newValue); //更新值
-    // },
-    // text(newValue) {
-    //   this.$emit("update:inText", newValue); //更新值
-    // },
+ 
   },
 };
 </script>
